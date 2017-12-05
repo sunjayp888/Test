@@ -1,0 +1,2967 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+UpstoxNet
+</name>
+</assembly>
+<members>
+<member name="M:UpstoxNet.Upstox.Logout">
+	<summary>
+ Destroys all data's retrieved from api.upstox.com and will force the user to login again."
+ <br/> Stops Websoket, RTD Server and Web Server and releases all resources.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/> 'ToDo Your Other Calls
+ <br/> 'Finally
+ <br/>Upstox.Logout()
+ <br/>'Cleanup
+ <br/> Upstox = Nothing 'Terminate the Upstox Instance thus releasing all resources held by Upstox Instance
+ <br/>
+	</example>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>True or False</returns>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>Initiate a new Upstox Instance for Login Again</remarks>
+</member><member name="M:UpstoxNet.Upstox.ReDownloadContract">
+	<summary>
+ (Deprecated. Kept for Compatability) Re-Downloads Symbols for all exchnages enabled for user
+ <br/>Call this Function Only when Symbols are not downloaded properly or missing some symbols in the symbol list
+ <br/> This call will be equal to manually deleting the symbol files and re-login to system.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.AccessTokenNullException">Access Token is Null.call GetAccessToken to receive one after login</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>True or False</returns>
+	<remarks>(Deprecated. Kept for Compatability)</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetMasterContract">
+	<summary>
+ Downloads Symbols for all exchnages enabled for user
+ <br/>First login of the day will take little bit time as Symbols will be downloaded from api.upstox.com
+ <br/> subsequent login will be fast as Symbols will be loaded from stored text file on the system.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.AccessTokenNullException">Access Token is Null.call GetAccessToken to receive one after login</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>True or False</returns>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>Downloading will be run in background thread to keep UI responsive as it is a Long Process</remarks>
+</member><member name="M:UpstoxNet.Upstox.PlaceAmo(System.String,System.String,System.String,System.String,System.Int32,System.String,System.Double,System.Double,System.String,System.String,System.Int32)">
+	<summary>
+ To Place After Market Order.OCO and CO not supported
+ </summary>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSym">Trade Symbol should match exactly with api.upstox.com</param>
+	<param name="Trans">B or S Not case sensitive.</param>
+	<param name="OrdType">Should be M or L or SL or SL-M</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="ProdType">Should be I or D.</param>
+	<param name="DiscQty">DiscQty</param>
+	<param name="cTag">Unique custom tag. AlphaNumeric. Min 3 chracters and max 15 characters</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="TrgPrice">Trigger Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="val">Should be DAY or IOC</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderTypeException">Order Type is Null or Invalid.Should be  M or L or SL or SL-M</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidProductException">Product is Null or Invalid.Should be I or D</exception>
+	<exception cref="T:UpstoxNet.Upstox.WrongProductException">Should be I or D</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidDiscQtyException">Disc Quantity is Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidValidityException">Validity is Null or Invalid.Should be DAY or IOC</exception>
+	<exception cref="T:UpstoxNet.Upstox.BuySLPriceException">Limit Price Should be Greater than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.SellSLPriceException">Limit Price Should be Less than or equal to Trigger Price</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelAmo(System.String)">
+	<summary>
+ Cancels a After Market Order
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">OCO Order can't be cancelled through CancelAmo method</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">CO Order can't be cancelled through CancelAmo method</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderCTag(System.String,System.String,System.String)">
+	<summary>
+ Retrieves custom order id for the given exch, trdsym and tag combination 
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<param name="cTag">Custom tag</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderPendingQty(System.String)">
+	<summary>
+ Retrieves the Order Pending Quantity
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderDiscQty(System.String)">
+	<summary>
+ Retrieves the Order Disclose Quantity
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderExchToken(System.String)">
+	<summary>
+ Retrieves the Order Exchange Token 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderToken(System.String)">
+	<summary>
+ Retrieves the Order Token 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderExch(System.String)">
+	<summary>
+ Retrieves the Order Exchange 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Exchange</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderTrdSym(System.String)">
+	<summary>
+ Retrieves the Order Trade Symbol 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Trade Symbol</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderOrdType(System.String)">
+	<summary>
+ Retrieves the Order Type For the given Order Id
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>M or L or SL or SL-m</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderProdType(System.String)">
+	<summary>
+ Retrieves the Order Product Type 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>I or D or OCO or CO</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderTrans(System.String)">
+	<summary>
+ Retrieves the Order Transaction Type 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>B or S</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderStatus(System.String)">
+	<summary>
+ Retrieves the Order Status
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>One of the Order Status OPEN|TRIGGER PENDING|COMPLETE|CANCELLED|REJECTED</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderExchId(System.String)">
+	<summary>
+ Retrieves the Order ExchId 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order ExchId</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderTimestamp(System.String)">
+	<summary>
+ Retrieves the Order Timestamp 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Timestamp </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderParentId(System.String)">
+	<summary>
+ Retrieves the Order ParentId 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order ParentId </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderFilledPrice(System.String)">
+	<summary>
+ Retrieves the Order Filled Price 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Filled price </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderFilledQty(System.String)">
+	<summary>
+ Retrieves the Order Filled Qty 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Filled Qty </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderMessage(System.String)">
+	<summary>
+ Retrieves the Order Message 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Message </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderQty(System.String)">
+	<summary>
+ Retrieves the Order Qty 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Qty </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderPrice(System.String)">
+	<summary>
+ Retrieves the Order Price 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Price </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderTriggerPrice(System.String)">
+	<summary>
+ Retrieves the Order Trigger Price 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Trigger Price </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetChildOrders(System.String)">
+	<summary>
+ Retrieves the Child Orders for OCO|CO
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Child Orders </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderDetails(System.String)">
+	<summary>
+ Retrieves the Order Details 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Order Details Comma Seperated in the below format
+ <br/>EXCHANGE,TOKEN,SYMBOL,PRODUCT,ORDER_TYPE,PRICE,TRIGGER_PRICE,QUANTITY,TRANSACTION_TYPE,AVERAGE_PRICE,TRADED_QUANTITY,MESSAGE,EXCHANGE_ORDER_ID,PARENT_ORDER_ID,ORDER_ID,TIME_IN_MICRO,STATUS
+ </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderIds(System.String,System.String,System.String)">
+	<summary>
+ Retrieves Order Ids for the Exch, Symbol and Product Combination 
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<param name="Product">Product</param>
+	<returns>Order Ids Comma Seperated </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderHist(System.String)">
+	<summary>
+ Retrieves the Complete Order History for the provided Order Id from api.upstox.com
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Complete Order History in Csv Format</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTradeHist(System.String)">
+	<summary>
+ Retrieves the Complete Trade History for the provided Order Id from api.upstox.com
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Complete Trade History in Csv Format</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Token">
+	<summary>
+ Get's the token
+ </summary>
+	<value>token</value>
+	<returns>token</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Exch">
+	<summary>
+ Get's the exchange
+ </summary>
+	<value>exchange</value>
+	<returns>exchange</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.TrdSym">
+	<summary>
+ Get's the trade_symbol
+ </summary>
+	<value>trade_symbol</value>
+	<returns>trade_symbol</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Ltp">
+	<summary>
+ Get's the ltp
+ </summary>
+	<value>ltp</value>
+	<returns>ltp</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Ltq">
+	<summary>
+ Get's the ltq
+ </summary>
+	<value>ltq</value>
+	<returns>ltq</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Atp">
+	<summary>
+ Get's the atp
+ </summary>
+	<value>atp</value>
+	<returns>atp</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Volume">
+	<summary>
+ Get's the volume
+ </summary>
+	<value>volume</value>
+	<returns>volume</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.TotalBuyQty">
+	<summary>
+ Get's the total_buy_qty
+ </summary>
+	<value>total_buy_qty</value>
+	<returns>total_buy_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.TotalSellQty">
+	<summary>
+ Get's the total_sell_qty
+ </summary>
+	<value>total_sell_qty</value>
+	<returns>total_sell_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Open">
+	<summary>
+ Get's the open_price
+ </summary>
+	<value>open_price</value>
+	<returns>open_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.High">
+	<summary>
+ Get's the high_price
+ </summary>
+	<value>high_price</value>
+	<returns>high_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Low">
+	<summary>
+ Get's the low_price
+ </summary>
+	<value>low_price</value>
+	<returns>low_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Close">
+	<summary>
+ Get's the Previous day close_price
+ </summary>
+	<value>close_price</value>
+	<returns>close_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidQty1">
+	<summary>
+ Get's the bid_qty
+ </summary>
+	<value>bid_qty</value>
+	<returns>bid_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidPrice1">
+	<summary>
+ Get's the bid_price
+ </summary>
+	<value>bid_price</value>
+	<returns>bid_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidOrders1">
+	<summary>
+ Get's the bid_orders
+ </summary>
+	<value>bid_orders</value>
+	<returns>bid_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidQty2">
+	<summary>
+ Get's the bid_qty
+ </summary>
+	<value>bid_qty</value>
+	<returns>bid_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidPrice2">
+	<summary>
+ Get's the bid_price
+ </summary>
+	<value>bid_price</value>
+	<returns>bid_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidOrders2">
+	<summary>
+ Get's the bid_orders
+ </summary>
+	<value>bid_orders</value>
+	<returns>bid_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidQty3">
+	<summary>
+ Get's the bid_qty
+ </summary>
+	<value>bid_qty</value>
+	<returns>bid_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidPrice3">
+	<summary>
+ Get's the bid_price
+ </summary>
+	<value>bid_price</value>
+	<returns>bid_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidOrders3">
+	<summary>
+ Get's the bid_orders
+ </summary>
+	<value>bid_orders</value>
+	<returns>bid_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidQty4">
+	<summary>
+ Get's the bid_qty
+ </summary>
+	<value>bid_qty</value>
+	<returns>bid_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidPrice4">
+	<summary>
+ Get's the bid_price
+ </summary>
+	<value>bid_price</value>
+	<returns>bid_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidOrders4">
+	<summary>
+ Get's the bid_orders
+ </summary>
+	<value>bid_orders</value>
+	<returns>bid_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidQty5">
+	<summary>
+ Get's the bid_qty
+ </summary>
+	<value>bid_qty</value>
+	<returns>bid_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidPrice5">
+	<summary>
+ Get's the bid_price
+ </summary>
+	<value>bid_price</value>
+	<returns>bid_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.BidOrders5">
+	<summary>
+ Get's the bid_orders
+ </summary>
+	<value>bid_orders</value>
+	<returns>bid_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskQty1">
+	<summary>
+ Get's the ask_qty
+ </summary>
+	<value>ask_qty</value>
+	<returns>ask_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskPrice1">
+	<summary>
+ Get's the ask_price
+ </summary>
+	<value>ask_price</value>
+	<returns>ask_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskOrders1">
+	<summary>
+ Get's the ask_orders
+ </summary>
+	<value>ask_orders</value>
+	<returns>ask_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskQty2">
+	<summary>
+ Get's the ask_qty
+ </summary>
+	<value>ask_qty</value>
+	<returns>ask_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskPrice2">
+	<summary>
+ Get's the ask_price
+ </summary>
+	<value>ask_price</value>
+	<returns>ask_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskOrders2">
+	<summary>
+ Get's the ask_orders
+ </summary>
+	<value>ask_orders</value>
+	<returns>ask_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskQty3">
+	<summary>
+ Get's the ask_qty
+ </summary>
+	<value>ask_qty</value>
+	<returns>ask_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskPrice3">
+	<summary>
+ Get's the ask_price
+ </summary>
+	<value>ask_price</value>
+	<returns>ask_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskOrders3">
+	<summary>
+ Get's the ask_orders
+ </summary>
+	<value>ask_orders</value>
+	<returns>ask_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskQty4">
+	<summary>
+ Get's the ask_qty
+ </summary>
+	<value>ask_qty</value>
+	<returns>ask_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskPrice4">
+	<summary>
+ Get's the ask_price
+ </summary>
+	<value>ask_price</value>
+	<returns>ask_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskOrders4">
+	<summary>
+ Get's the ask_orders
+ </summary>
+	<value>ask_orders</value>
+	<returns>ask_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskQty5">
+	<summary>
+ Get's the ask_qty
+ </summary>
+	<value>ask_qty</value>
+	<returns>ask_qty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskPrice5">
+	<summary>
+ Get's the ask_price
+ </summary>
+	<value>ask_price</value>
+	<returns>ask_price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.AskOrders5">
+	<summary>
+ Get's the ask_orders
+ </summary>
+	<value>ask_orders</value>
+	<returns>ask_orders</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.LTT">
+	<summary>
+ Get's the Last Traded Time
+ </summary>
+	<value>LTT</value>
+	<returns>LTT</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.Spot">
+	<summary>
+ Get's the Spot Price
+ </summary>
+	<value>Spot Price</value>
+	<returns>Spot Price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.OpenIntrest">
+	<summary>
+ Get's the OpenIntrest
+ </summary>
+	<value>OpenIntrest</value>
+	<returns>OpenIntrest</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.LowerCircuit">
+	<summary>
+ Get's the LowerCircuit
+ </summary>
+	<value>LowerCircuit</value>
+	<returns>LowerCircuit</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.UpperCircuit">
+	<summary>
+ Get's the UpperCircuit
+ </summary>
+	<value>UpperCircuit</value>
+	<returns>UpperCircuit</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.YearlyHigh">
+	<summary>
+ Get's the YearlyHigh
+ </summary>
+	<value>YearlyHigh</value>
+	<returns>YearlyHigh</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.QuotesReceivedEventArgs.YearlyLow">
+	<summary>
+ Get's the YearlyLow
+ </summary>
+	<value>YearlyLow</value>
+	<returns>YearlyLow</returns>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.QuotesReceivedEventArgs.#ctor(System.DateTime,System.String,System.String,System.String,System.Double,System.Int32,System.Double,System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Int32,System.Double,System.Int32,System.Double,System.Int32,System.Double,System.Double,System.Double,System.Double)">
+	<summary>
+ This class is passed to QuotesReceivedEvent as argument
+ </summary>
+	<param name="sLTT">LTT</param>
+	<param name="sToken">Token</param>
+	<param name="sExch">Exch</param>
+	<param name="sTrdSym">TrdSym</param>
+	<param name="sLtp">Ltp</param>
+	<param name="sLtq">Ltq</param>
+	<param name="sAtp">Atp</param>
+	<param name="sVolume">Volume</param>
+	<param name="sTotalBuyQty">TotalBuyQty</param>
+	<param name="sTotalSellQty">TotalSellQty</param>
+	<param name="sOpen">Open</param>
+	<param name="sHigh">High</param>
+	<param name="sLow">Low</param>
+	<param name="sClose">Close</param>
+	<param name="sBidQty1">BidQty1</param>
+	<param name="sBidPrice1">BidPrice1</param>
+	<param name="sBidOrders1">BidOrders1</param>
+	<param name="sBidQty2">BidQty2</param>
+	<param name="sBidPrice2">BidPrice2</param>
+	<param name="sBidOrders2">BidOrders2</param>
+	<param name="sBidQty3">BidQty3</param>
+	<param name="sBidPrice3">BidPrice3</param>
+	<param name="sBidOrders3">BidOrders3</param>
+	<param name="sBidQty4">BidQty4</param>
+	<param name="sBidPrice4">BidPrice4</param>
+	<param name="sBidOrders4">BidOrders4</param>
+	<param name="sBidQty5">BidQty5</param>
+	<param name="sBidPrice5">BidPrice5</param>
+	<param name="sBidOrders5">BidOrders5</param>
+	<param name="sAskQty1">AskQty1</param>
+	<param name="sAskPrice1">AskPrice1</param>
+	<param name="sAskOrders1">AskOrders1</param>
+	<param name="sAskQty2">AskQty2</param>
+	<param name="sAskPrice2">AskPrice2</param>
+	<param name="sAskOrders2">AskOrders2</param>
+	<param name="sAskQty3">AskQty3</param>
+	<param name="sAskPrice3">AskPrice3</param>
+	<param name="sAskOrders3">AskOrders3</param>
+	<param name="sAskQty4">AskQty4</param>
+	<param name="sAskPrice4">AskPrice4</param>
+	<param name="sAskOrders4">AskOrders4</param>
+	<param name="sAskQty5">AskQty5</param>
+	<param name="sAskPrice5">AskPrice5</param>
+	<param name="sAskOrders5">AskOrders5</param>
+	<param name="sSpot">Spot</param>
+	<param name="sOpenIntrest">OpenIntrest</param>
+	<param name="sLowerCircuit">LowerCircuit</param>
+	<param name="sUpperCircuit">UpperCircuit</param>
+	<param name="sYearlyHigh">YearlyHigh</param>
+	<param name="sYearlyLow">YearlyLow</param>
+	<remarks></remarks>
+</member><member name="T:UpstoxNet.QuotesReceivedEventArgs">
+	<summary>
+ This Class exposes properties for all price fields supported by Upstox Webscoket
+ <br/>Also includes general properties exchange, symbol and token
+ </summary>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.Token">
+	<summary>
+ Get's the token
+ </summary>
+	<value>token</value>
+	<returns>token</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.Exch">
+	<summary>
+ Get's the exchange
+ </summary>
+	<value>exchange</value>
+	<returns>exchange</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TrdSym">
+	<summary>
+ Get's the trade_symbol
+ </summary>
+	<value>trade_symbol</value>
+	<returns>trade_symbol</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.Product">
+	<summary>
+ Get's the Product
+ </summary>
+	<value>Product</value>
+	<returns>Product</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.OrderType">
+	<summary>
+ Get's the OrderType
+ </summary>
+	<value>OrderType</value>
+	<returns>OrderType</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TransType">
+	<summary>
+ Get's the Transaction Type
+ </summary>
+	<value>Transaction Type</value>
+	<returns>Transaction Type</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TradedPrice">
+	<summary>
+ Get's the Traded Price
+ </summary>
+	<value>Traded Price</value>
+	<returns>Traded Price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TradedQty">
+	<summary>
+ Get's the Traded Quantity
+ </summary>
+	<value>Traded Quantity</value>
+	<returns>Traded Quantity</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.ExchId">
+	<summary>
+ Get's the Exchange Order Id
+ </summary>
+	<value>Exchange Order Id</value>
+	<returns>Exchange Order Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TradeId">
+	<summary>
+ Get's the Trade Id
+ </summary>
+	<value>Trade Id</value>
+	<returns>Trade Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.OrderId">
+	<summary>
+ Get's the Order Id
+ </summary>
+	<value>Order Id</value>
+	<returns>Order Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.ExchTime">
+	<summary>
+ Get's the Exch Time
+ </summary>
+	<value>Exch Time</value>
+	<returns>Exch Time</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.TradeUpdateEventArgs.TimeStamp">
+	<summary>
+ Get's the Timestamp
+ </summary>
+	<value>Timestamp</value>
+	<returns>Timestamp</returns>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.TradeUpdateEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.Double,System.String)">
+	<summary>
+ This class is passed to TradeUpdateEvent as argument
+ </summary>
+	<param name="sExch">Exch</param>
+	<param name="sToken">Token</param>
+	<param name="sTrdSym">TrdSym</param>
+	<param name="sProduct">Product</param>
+	<param name="sOrderType">OrderType</param>
+	<param name="sTrans">Trans</param>
+	<param name="sTradedQty">TradedQty</param>
+	<param name="sExchId">ExchId</param>
+	<param name="sOrderId">OrderId</param>
+	<param name="sExchTime">ExchTime</param>
+	<param name="sTimeStamp">TimeStamp</param>
+	<param name="sTradedPrice">TradedPrice</param>
+	<param name="sTradeId">TradeId</param>
+	<remarks></remarks>
+</member><member name="T:UpstoxNet.TradeUpdateEventArgs">
+	<summary>
+ This Class exposes properties for all trade fields supported by Upstox Webscoket
+ <br/>Also includes general properties exchange, symbol and token
+ </summary>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Token">
+	<summary>
+ Get's the token
+ </summary>
+	<value>token</value>
+	<returns>token</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Exch">
+	<summary>
+ Get's the exchange
+ </summary>
+	<value>exchange</value>
+	<returns>exchange</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.TrdSym">
+	<summary>
+ Get's the trade_symbol
+ </summary>
+	<value>trade_symbol</value>
+	<returns>trade_symbol</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Product">
+	<summary>
+ Get's the Product
+ </summary>
+	<value>Product</value>
+	<returns>Product</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.OrderType">
+	<summary>
+ Get's the OrderType
+ </summary>
+	<value>OrderType</value>
+	<returns>OrderType</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Duration">
+	<summary>
+ Get's the Duration
+ </summary>
+	<value>Duration</value>
+	<returns>Duration</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Price">
+	<summary>
+ Get's the Price
+ </summary>
+	<value>Price</value>
+	<returns>Price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.TriggerPrice">
+	<summary>
+ Get's the TriggerPrice
+ </summary>
+	<value>TriggerPrice</value>
+	<returns>TriggerPrice</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Quantity">
+	<summary>
+ Get's the Quantity
+ </summary>
+	<value>Quantity</value>
+	<returns>Quantity</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.DisQuantity">
+	<summary>
+ Get's the Disclosed Quantity
+ </summary>
+	<value>Disclosed Quantity</value>
+	<returns>Disclosed Quantity</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.TransType">
+	<summary>
+ Get's the Transaction Type
+ </summary>
+	<value>Transaction Type</value>
+	<returns>Transaction Type</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.AvgPrice">
+	<summary>
+ Get's the Average Price
+ </summary>
+	<value>Average Price</value>
+	<returns>Average Price</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.TradedQty">
+	<summary>
+ Get's the Traded Quantity
+ </summary>
+	<value>Traded Quantity</value>
+	<returns>Traded Quantity</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Message">
+	<summary>
+ Get's the Order Message
+ </summary>
+	<value>Order Message</value>
+	<returns>Order Message</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.ExchId">
+	<summary>
+ Get's the Exchange Order Id
+ </summary>
+	<value>Exchange Order Id</value>
+	<returns>Exchange Order Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.ParentId">
+	<summary>
+ Get's the Parent Order Id
+ </summary>
+	<value>Parent Order Id</value>
+	<returns>Parent Order Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.OrderId">
+	<summary>
+ Get's the Order Id
+ </summary>
+	<value>Order Id</value>
+	<returns>Order Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.ExchTime">
+	<summary>
+ Get's the Exch Time
+ </summary>
+	<value>Exch Time</value>
+	<returns>Exch Time</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.TimeStamp">
+	<summary>
+ Get's the Timestamp
+ </summary>
+	<value>Timestamp</value>
+	<returns>Timestamp</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.Status">
+	<summary>
+ Get's the Order Status
+ </summary>
+	<value>Order Status</value>
+	<returns>Order Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.IsAmo">
+	<summary>
+ Get's the AMO Status
+ </summary>
+	<value>AMO Status</value>
+	<returns>AMO Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.OrderUpdateEventArgs.ValidDate">
+	<summary>
+ Get's the Valid date
+ </summary>
+	<value>Valid date</value>
+	<returns>Valid date</returns>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.OrderUpdateEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.Double,System.Double,System.Int32,System.Int32,System.String,System.Double,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.String)">
+	<summary>
+ This class is passed to OrderUpdateEvent as argument
+ </summary>
+	<param name="sExch">Exch</param>
+	<param name="sToken">Token</param>
+	<param name="sTrdSym">Trade Symbol</param>
+	<param name="sProduct">Product</param>
+	<param name="sOrderType">Order Type</param>
+	<param name="sDuration">Duration</param>
+	<param name="sPrice">Price</param>
+	<param name="sTriggerPrice">TriggerPrice</param>
+	<param name="sQty">Qty</param>
+	<param name="sDisQty">DisQty</param>
+	<param name="sTrans">Trans</param>
+	<param name="sAvgPrice">AvgPrice</param>
+	<param name="sTradedQty">TradedQty</param>
+	<param name="sMessage">Message</param>
+	<param name="sExchId">ExchId</param>
+	<param name="sParentId">ParentId</param>
+	<param name="sOrderId">OrderId</param>
+	<param name="sExchTime">ExchTime</param>
+	<param name="sTimeStamp">TimeStamp</param>
+	<param name="sStatus">Status</param>
+	<param name="sIsAmo">IsAmo</param>
+	<param name="sValidDate">ValidDate</param>
+	<remarks></remarks>
+</member><member name="T:UpstoxNet.OrderUpdateEventArgs">
+	<summary>
+ This Class exposes properties for all order fields supported by Upstox Webscoket
+ <br/>Also includes general properties exchange, symbol and token
+ </summary>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetMWSymbols">
+	<summary>
+ Returns the list of symbols that are subscribed for quotes
+ </summary>
+	<returns>CSV Market watch</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTokenException">Token is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetExch(System.String)">
+	<summary>
+ Returns the Exchange for the given Token
+ </summary>
+	<param name="Token">Token </param>
+	<returns>Exchange</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTokenException">Token is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTrdSym(System.String)">
+	<summary>
+ Returns the Trade Symbol for the given Token
+ </summary>
+	<param name="Token">Token </param>
+	<returns>Trade Symbol</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTokenException">Token is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLotSize(System.String,System.String)">
+	<summary>
+ Returns the Lot Size for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Lot Size</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTickSize(System.String,System.String)">
+	<summary>
+ Returns the Tick Size for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Tick Size</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetStrike(System.String,System.String)">
+	<summary>
+ Returns the Strike for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Strike</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetExpiry(System.String,System.String)">
+	<summary>
+ Returns the Expiry for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Expiry</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetISIN(System.String,System.String)">
+	<summary>
+ Returns the ISIN for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>ISIN</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetExchToken(System.String,System.String)">
+	<summary>
+ Returns the Exch Token for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Exch Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetToken(System.String,System.String)">
+	<summary>
+ Returns the Token for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Token</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetSegment(System.String,System.String)">
+	<summary>
+ Returns the Segment for the given Exch and Trade Symbol combination
+ </summary>
+	<param name="Exch">Exchange </param>
+	<param name="TrdSymbol">Trade Symbol as it is in api.upstox.com</param>
+	<returns>Segment</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetSymbols(System.String)">
+	<summary>
+ To get symbols list for a Exchange
+ </summary>
+	<param name="Exch">Exchange</param>
+	<returns>Returns string with comma seperated values</returns>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLTT(System.String,System.String)">
+	<summary>
+ Retrieve's LTT for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>LTT</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetUpperCircuit(System.String,System.String)">
+	<summary>
+ Retrieve's Upper Circuit for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Upper Circuit</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLowerCircuit(System.String,System.String)">
+	<summary>
+ Retrieve's Lower Circuit for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Lower Circuit</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetBestAskQty(System.String,System.String)">
+	<summary>
+ Retrieve's Best Ask Qty for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Best Ask Qty</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetBestBidQty(System.String,System.String)">
+	<summary>
+ Retrieve's Best Bid Qty for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Best Bid Qty</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLTQ(System.String,System.String)">
+	<summary>
+ Retrieve's LTQ for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>LTQ</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetMtm(System.String,System.String)">
+	<summary>
+ Retrieve's MTM for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>MTM</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetNetQty(System.String,System.String)">
+	<summary>
+ Retrieve's Net Qty for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Net Qty</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTotAskQty(System.String,System.String)">
+	<summary>
+ Retrieve's Total Ask Qty for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Total Ask Qty</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTotBidQty(System.String,System.String)">
+	<summary>
+ Retrieve's Total Bid Qty for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Total Bid Qty</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOpenInt(System.String,System.String)">
+	<summary>
+ Retrieve's Open Int for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Open Int</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetVolume(System.String,System.String)">
+	<summary>
+ Retrieve's Volume for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Volume</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetBestAsk(System.String,System.String)">
+	<summary>
+ Retrieve's Best Ask for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Best Ask</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetBestBid(System.String,System.String)">
+	<summary>
+ Retrieve's Best Bid for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Best Bid</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetAtp(System.String,System.String)">
+	<summary>
+ Retrieve's ATP for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>ATP</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetClose(System.String,System.String)">
+	<summary>
+ Retrieve's Close for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Close (Prv Day)</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLow(System.String,System.String)">
+	<summary>
+ Retrieve's Low for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Low</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetHigh(System.String,System.String)">
+	<summary>
+ Retrieve's High for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>High</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOpen(System.String,System.String)">
+	<summary>
+ Retrieve's Open for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Open</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetLtp(System.String,System.String)">
+	<summary>
+ Retrieve's Ltp for the symbol.
+ <br/>The value is retured from the Cached Data(Web-Sockets)
+ <br/>You must have subscribed for Live Quotes for the Symbol to get latest value else zero will be returned
+ <br/>This method is alternate to QuotesUpdateEvent and mainly use in Excel as Events are not handled in Excel 
+ <br/> You may call this function to get the required value in your VBA
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Ltp</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetSnapQuote(System.String,System.String)">
+	<summary>
+ Retrieve's Snap Quote for the symbol from api.upstox.com
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Returns Market Depth as string with comma seperated in below format
+ <br/> For LTP Mode
+ <br/> TIMESTAMP,EXCHANGE,SYMBOL,LTP,CLOSE
+ <br/>For Full Mode - Stock
+ <br/>TIMESTAMP,EXCHANGE,SYMBOL,LTP,CLOSE,OPEN,HIGH,LOW,VTT,ATP,OI,SPOT_PRICE,TOTAL_BUY_QTY,TOTAL_SELL_QTY,LOWER_CIRCUIT,UPPER_CIRCUIT,BID_QTY1,BID_PRICE1,BID_ORDERS1,BID_QTY2,BID_PRICE2,BID_ORDERS2,BID_QTY3,BID_PRICE3,BID_ORDERS3,BID_QTY4,BID_PRICE4,BID_ORDERS4,BID_QTY5,BID_PRICE5,BID_ORDERS5,ASK_QTY1,ASK_PRICE1,ASK_ORDERS1,ASK_QTY2,ASK_PRICE2,ASK_ORDERS2,ASK_QTY3,ASK_PRICE3,ASK_ORDERS3,ASK_QTY4,ASK_PRICE4,ASK_ORDERS4,ASK_QTY5,ASK_PRICE5,ASK_ORDERS5
+ <br/>For Full Mode - Index
+ <br/>TIMESTAMP,EXCHANGE,SYMBOL,LTP,CLOSE,OPEN,HIGH,LOW,YEARLY_HIGH,YEARLY_LOW
+ </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Warning: Do not this use for live quotes instead use websocket.Calling this function in loop will result in error and increased load on Upstox Server<br/>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetSnapLtp(System.String,System.String)">
+	<summary>
+ Retrieve's Snap Ltp for the symbol from api.upstox.com
+ </summary>
+	<param name="Exch">Exch</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<returns>Ltp
+ </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Warning: Do not this use for live quotes instead use websocket.Calling this function in loop will result in error and increased load on Upstox Server<br/>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetHistData(System.String,System.String,System.String,System.DateTime,System.DateTime,System.Boolean,System.String)">
+	<summary>
+ Gets the Historical data for the given Exch, Trdsymbol,Interval and Date Combination
+<br/> This is a Time Consuming call.So call it in background thread to keep UI responsive and Invoke once done.
+ </summary>
+	<param name="Exch">Exchange</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<param name="Interval">1MINUTE| 5MINUTE| 10MINUTE| 30MINUTE| 60MINUTE| 1DAY| 1WEEK| 1MONTH</param>
+	<param name="FromDate">Date from which data required</param>
+	<param name="ToDate">Date upto data required</param>
+	<param name="IsDateTimeSplit">If True, Date and Time will be Split else combined. Default is True</param>
+	<param name="SaveFormat">txt or csv</param>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidIntervalException">Interval is Null or Invalid.Should be 1MINUTE| 5MINUTE| 10MINUTE| 30MINUTE| 60MINUTE| 1DAY| 1WEEK| 1MONTH</exception>
+	<returns>Array of String containing Historical data.Each Element represents single D,O,H,L,C,V,CP data seperated by comma
+ <br/>You should loop through the array and split elements by comma to get required field
+ <br/>{"01-Jan-2016 13:30:00,1392.95,1393,1392,1392.15,1869,1335", "01-Jan-2016 13:30:01,1392.95,1393,1392,1392.15,1869,1335"}
+ <br/> You can Import this Data to AmiBroker as Well
+ </returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetHistDataBatch(System.Boolean,System.String,System.String)">
+	<summary>
+ This method can be used to download and save historical data for multiple symbols at once
+ </summary>
+	<param name="IsDateTimeSplit">True or False</param>
+	<param name="SaveFormat">csv or Txt</param>
+	<param name="SymbolFormat">U or N or K</param>
+	<returns>True or False</returns>
+	<remarks>
+		<br/>data will be downloded in background
+ <br/> do not import same file multiple times
+ <br/> data will be downloaded to C:\Users\Public\Documents
+ <br/> any errors will be logged in UpstoxNet_logs.txt file
+ <br/> You can type symbols details in a text file, one symbol per line in the below format
+ <br/>Exch,Trade_Symbol,Interval,FromDate,Todate
+ <br/> Example: NSE_FO,NIFTY17AUGFUT,1MINUTE,21-Oct-2017,20-Nov-2017
+ <br/>Date should be in dd-MMM-yyyy format
+ <br/>Interval 1MINUTE| 5MINUTE| 10MINUTE| 30MINUTE| 60MINUTE| 1DAY| 1WEEK| 1MONTH
+ <br/>Symbol Format 'U-Upstox, N-Nest, K-Kite - Making the download file compatable with other platforms
+ </remarks>
+</member><member name="M:UpstoxNet.Upstox.PlaceCO(System.String,System.String,System.String,System.Int32,System.Double,System.String,System.Double,System.String)">
+	<summary>
+ Places a CO Order
+ </summary>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSym">Trade Symbol should match exactly with api.upstox.com</param>
+	<param name="Trans">B or S Not case sensitive.</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="stoploss_Price">Stoploss Price</param>
+	<param name="cTag">Unique custom tag. AlphaNumeric. Min 3 chracters and max 15 characters</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="OrdType">Order Type M or L</param>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.CONotEnabledException">CO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for BO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidCOOrderTypeException">CO Order Type is Null or Invalid.Should be   M or L</exception>
+	<returns>Order Id</returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ExitCO(System.String)">
+	<summary>
+ Exits CO Position
+ </summary>
+	<param name="OrderId">OrderId of Stoploss Order</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.CONotEnabledException">CO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a CO Order</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifyCOSl(System.String,System.Double)">
+	<summary>
+ Modifies CO stoploss Trigger Price
+ </summary>
+	<param name="OrderId">OrderId of Stoploss</param>
+	<param name="TrgPrice">Trigger Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.CONotEnabledException">CO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for BO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a CO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelCOMain(System.String)">
+	<summary>
+ Cancels a Open CO Main Order 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.CONotEnabledException">CO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a CO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifyCOMain(System.String,System.Int32,System.Double)">
+	<summary>
+ Modifies a CO Main Order. Modifiyable Qty or Limit Price or Both
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.CONotEnabledException">CO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a CO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowSettingsWindow">
+	<summary>
+ Displays Settings Window where a user can input API details in UI mode.
+ </summary>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowMsgBox(System.String,System.String,System.String,System.Boolean,System.Int32)">
+	<summary>
+ Displays a simple Message Box .
+ </summary>
+	<param name="line1">line1</param>
+	<param name="line2">line2</param>
+	<param name="line3">line3</param>
+	<param name="CanAutoClose">CanAutoClose</param>
+	<param name="SleepTime">SleepTime in ms</param>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowInputBox(System.String,System.String)">
+	<summary>
+ Displays a simple Input Box where the user will be prompt to enter value.
+ <br/>This can be used where user inputs is required
+ </summary>
+	<param name="Prompt1">Prompt1</param>
+	<param name="Prompt2">Prompt2</param>
+	<returns>User Input or Empty String if user cancel the prompt</returns>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowMultiInputBox(System.String,System.String,System.String,System.String,System.String,System.String)">
+	<summary>
+ Displays a simple Multi Input Box where the user will be prompt to enter multiple values.
+ <br/>This can be used where user inputs is required
+ </summary>
+	<param name="Prompt">Prompt to user</param>
+	<param name="Label1"> Label1</param>
+	<param name="Label2">Label2</param>
+	<param name="Label3">Label3</param>
+	<param name="Label4">Label4</param>
+	<param name="Label5">Label5</param>
+	<returns>Array of String with Fixed Size of 5.Elements sequence is same as Label Sequence.</returns>
+	<remarks> You need to convert the each element to respective data type as required before utilising them</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowOrderWindow">
+	<summary>
+ Displays New Order Window where a user can place order in UI mode.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowModifyWindow">
+	<summary>
+ Displays Modify Order Window where a user can modify/cancel order in UI mode.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowModifyWindow(System.String)">
+	<summary>
+ Displays Modify Order Window where a user can modify/cancel order in UI mode.
+ <br/> This is an overload method where you can pass the Order Id as param instead of manually typing in the textbox
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<remarks> None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowOrderWindow(System.String,System.String,System.String,System.String,System.Int32,System.String,System.String)">
+	<summary>
+ Displays Order Window where a user can place a order in UI mode.
+ <br/> This is an overload method where you can pass the Order details as param instead of manually typing in the textbox
+ <br/> This method used in SqOff call. Only Supports Product I or D
+ <br/> By default Order Window Opens with OrderType 'M'
+ </summary>
+	<param name="Trans">B or S. Not case sensitive.</param>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSymbol">Trade Symbol should match exactly with api.upstox.com</param>
+	<param name="Product">Should be I or D</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="OrdType">M, L, SL, SL-M</param>
+	<param name="OrderComplex">Simple, OCO, CO</param>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.WrongProductException">Should be I or D</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowHistDataInputBox">
+	<summary>
+ Displays a Input Box where the user can enter or select symbol details required for GetHistData() Call.
+ <br/>This is mainly used in Excel to Fetch Historical Data in Sheet
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>Array of object containing symbol details with Fixed Size of 4.Elements sequence is Exch,TradeSymbol,Interval,NoOfDays</returns>
+	<remarks> You need to convert the each element to respective data type as required before utilising them</remarks>
+</member><member name="M:UpstoxNet.Upstox.ShowMarketDepth(System.String,System.String)">
+	<summary>
+ Show Market depth for the given Trade Symbol
+ <br/> This feature is mainly for Excel Users.
+ </summary>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSymbol">Trade Symbol should match exactly with api.upstox.com</param>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:UpstoxNet.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:UpstoxNet.My.Resources.Resources.mcxblot">
+	<summary>
+  Looks up a localized string similar to GOLD,100
+GOLDM,0.1
+GOLDGUINEA,0.125
+SILVER,1
+SILVERM,1
+SILVERMIC,1
+LEAD,1000
+LEADMINI,1000
+ZINC,1000
+ZINCMINI,1000
+ALUMINIUM,1000
+COPPER,1000
+NICKEL,1
+CRUDEOIL,1
+CRUDEOILM,1
+NATURALGAS,1
+ALUMINI,1000
+BRCRUDEOIL,100
+CARDAMOM,1
+COPPERM,1
+COTTON,1
+CPO,100
+GOLDPETAL,1
+GOLDPTLDEL,1
+GUARSEED,10
+KAPAS,50
+KAPASKHALI,10
+MENTHAOIL,1
+NICKELM,1
+SILVER1000,1.
+</summary>
+</member><member name="P:UpstoxNet.My.Resources.Resources.setting">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member><member name="P:UpstoxNet.My.Resources.Resources.UpstoxNet">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member><member name="T:UpstoxNet.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:UpstoxNet.Upstox.PlaceOCO(System.String,System.String,System.String,System.Int32,System.Double,System.Double,System.Double,System.Int32,System.String,System.Double,System.String)">
+	<summary>
+ Places OCO Order
+ </summary>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSym">Trade Symbol should match exactly with api.upstox.com</param>
+	<param name="Trans">B or S Not case sensitive.</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="SqOffValue">SqOff Value</param>
+	<param name="StoplossValue">Stoploss Value</param>
+	<param name="cTag">Unique custom tag. AlphaNumeric. Min 3 chracters and max 15 characters</param>
+	<param name="TrailTicks">Trail Value</param>
+	<param name="OrdType">Order Type L or SL</param>
+	<param name="TrgPrice">Trigger Price incase of SL Order Type</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrailTicksException">Trailing Ticks value is Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidSqOffValueException">SquareOff value is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidStoplossValueException">Stoploss value is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.BuySLPriceException">Limit Price Should be Greater than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.SellSLPriceException">Limit Price Should be Less than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOCOOrderTypeException">OCO Order Type is Null or Invalid.Should be   L or SL</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ExitOCO(System.String)">
+	<summary>
+ Exits a Open OCO Position
+ </summary>
+	<param name="OrderId">OrderId of the Stoploss Or Target Order</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a OCO Order</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelOCOMain(System.String)">
+	<summary>
+ Cancels a Open OCO Main Order 
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a OCO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifyOCOMain(System.String,System.Int32,System.Double,System.Double)">
+	<summary>
+ Modifies a OCO Main Order. Modifiyable Qty or Limit Price or Both
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="TrgPrice">Trigger Price in case of SL.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a OCO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.BuySLPriceException">Limit Price Should be Greater than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.SellSLPriceException">Limit Price Should be Less than or equal to Trigger Price</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifyOCOTgt(System.String,System.Double)">
+	<summary>
+ Modifies OCO Target Order. Modifyable Limit Price Only
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a OCO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifyOCOSl(System.String,System.Double)">
+	<summary>
+ Modifies OCO Stoploss Order Price
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<param name="TrgPrice">Trigger Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OCONotEnabledException">OCO is not enabled for user</exception>
+	<exception cref="T:UpstoxNet.Upstox.ExchNotEnabledException">Exchange is not enabled for OCO or CO</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">Order is not a OCO Order</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.PlaceSimpleOrder(System.String,System.String,System.String,System.String,System.Int32,System.String,System.Double,System.Double,System.String,System.String,System.Int32)">
+	<summary>
+ Places a Simple Order
+ </summary>
+	<param name="Exch">Exchange should exactly match with api.upstox.com</param>
+	<param name="TrdSym">Trade Symbol should match exactly with api.upstox.com</param>
+	<param name="Trans">B or S. Not case sensitive.</param>
+	<param name="OrdType">Should be M or L or SL or SL-M</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="ProdType">Should be I or D</param>
+	<param name="DiscQty">DiscQty</param>
+	<param name="cTag">Unique custom tag. AlphaNumeric. Min 3 chracters and max 15 characters</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="TrgPrice">Trigger Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="val">Should be DAY or IOC</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderTypeException">Order Type is Null or Invalid.Should be  M or L or SL or SL-M</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidProductException">Product is Null or Invalid.Should be I or D or CO or OCO</exception>
+	<exception cref="T:UpstoxNet.Upstox.WrongProductException">Should be I or D</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidValidityException">Validity is Null or Invalid.Should be DAY or IOC</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidDiscQtyException">Disc Quantity is Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.BuySLPriceException">Limit Price Should be Greater than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.SellSLPriceException">Limit Price Should be Less than or equal to Trigger Price</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.ModifySimpleOrder(System.String,System.String,System.Int32,System.Double,System.Double)">
+	<summary>
+ Modifies a Simple Order
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<param name="OrdType">Should be M or L or SL or SL-M</param>
+	<param name="Qty">For EQ-No of shares to Buy/Sell.For FUT No of Lots to Buy/Sell (Not Lot Size)</param>
+	<param name="LmtPrice">Limit Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<param name="TrgPrice">Trigger Price to Buy/Sell.Price will be automatically rounded to TickSize.No need of rounding in your client.</param>
+	<returns>Order Id</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTransactionException">Transaction Type is Null or Invalid.Should be B or S</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderTypeException">Order Type is Null or Invalid.Should be  M or L or SL or SL-M</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidQtyException">Quantity is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidPriceException">Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrgPriceException">Trigger Price is 0 or Invalid or negative</exception>
+	<exception cref="T:UpstoxNet.Upstox.BuySLPriceException">Limit Price Should be Greater than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.SellSLPriceException">Limit Price Should be Less than or equal to Trigger Price</exception>
+	<exception cref="T:UpstoxNet.Upstox.LimitToSLModifyException">Order Type From L to SL-M or SL can't be modified</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">OCO Order can't be modified through ModifyRegularOrder method</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">CO Order can't be modified through ModifyRegularOrder method</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelSimpleOrder(System.String)">
+	<summary>
+ Cancels a Open or Trigger Pending Simple Order
+ </summary>
+	<param name="OrderId">Order Id</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.OrderIdNotFoundException">OrderId is not found or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidOrderIdException">OrderId is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">OCO Order can't be cancelled through CancelRegularOrder method</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">CO Order can't be cancelled through CancelRegularOrder method</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelSimpleOrder(System.String[])">
+	<summary>
+ Cancels Open or Trigger Pending Simple Order's
+ </summary>
+	<param name="OrderId">String Array of Order Id's</param>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.GeneralException">None of the Order Id is valid</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.CancelAllSimpleOrder">
+	<summary>
+ Cancels All Open or Trigger Pending Simple Order's
+ </summary>
+	<returns>Status</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks>Take extreme precaution while calling this method as it will cancel all open or trigger pending orders.Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetOrderBook">
+	<summary>
+ Retrieve's Order Book from api.upstox.com
+ </summary>
+	<returns>Returns strings with comma seperated values and each entry or row seperated by New Line</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetTradeBook">
+	<summary>
+ Retrieve's Trade Book from api.upstox.com
+ </summary>
+	<returns>Returns strings with comma seperated values and each entry or row seperated by New Line</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetPositions">
+	<summary>
+ Retrieve's Positions from api.upstox.com
+ </summary>
+	<returns>Returns strings with comma seperated values and each entry or row seperated by New Line</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetFunds">
+	<summary>
+ Retrieve's Funds and Margins from api.upstox.com
+ </summary>
+	<returns>Returns strings with comma seperated values and each entry or row seperated by New Line</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetHoldings">
+	<summary>
+ Retrieve's Holdings from api.upstox.com
+ </summary>
+	<returns>Returns strings with comma seperated values and each entry or row seperated by New Line </returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.Login">
+	<summary>
+ Opens a WebBrowser Control for Login Flows and retrieves the access code on succesful login.
+ <br/> Starts a Local Web Server if it is not already running.
+ </summary>
+	<example>
+ Imports UpstoxDotNet
+ <br/>Dim Upstox as Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Api_Key = "xdefvsj455xxxx"
+ <br/>Upstox.Api_Secret = "sghhyrteyens"
+ <br/>
+		<br/>Try
+ <br/>Upstox.Login()
+ <br/>Catch ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+	</example>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.ApiKeyNullException">Api Key is Null</exception>
+	<exception cref="T:UpstoxNet.Upstox.ApiSecretNullException">Api Secret is Null</exception>
+	<exception cref="T:UpstoxNet.Upstox.RedirectUrlNullException">Redirect Url is Null</exception>
+	<returns>True or False</returns>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>This call will set the Access_Code Property automatically</remarks>
+</member><member name="M:UpstoxNet.Upstox.Login(System.String)">
+	<summary>
+ Opens Browser for Login Flows.
+ <br/>copy the access code on succesful login and pass it to GetAccessToken.
+ </summary>
+	<param name="browser_name">chrome|firefox|default</param>
+	<example>
+ Imports UpstoxDotNet
+ <br/>Dim Upstox as Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Api_Key = "xdefvsj455xxxx"
+ <br/>Upstox.Api_Secret = "sghhyrteyens"
+ <br/>
+		<br/>Try
+ <br/> Upstox.Login("chrome")
+ <br/>Catch ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+	</example>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.ApiKeyNullException">Api Key is Null</exception>
+	<exception cref="T:UpstoxNet.Upstox.ApiSecretNullException">Api Secret is Null</exception>
+	<exception cref="T:UpstoxNet.Upstox.RedirectUrlNullException">Redirect Url is Null</exception>
+	<returns>True or False</returns>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>This call will set the Access_Code Property automatically</remarks>
+</member><member name="M:UpstoxNet.Upstox.SubscribeQuotesAll">
+	<summary>
+ Subscribes Quotes For All Symbols in The Watch List
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMasterContract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<returns>True if successfully subscribed for all symbols else False</returns>
+	<remarks>Donot call this Method in a loop. Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.UnSubscribeQuotesAll">
+	<summary>
+ UnSubscribes Quotes For All Symbols in The Watch List
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMasterContract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<returns>True if successfully unsubscribed for all symbols else False</returns>
+	<remarks>Donot call this Method in a loop. Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.SubscribeQuotes(System.String,System.String)">
+	<summary>
+ Subscribes Quotes from Upstox Webscoket
+ </summary>
+	<param name="Exch">Exchange</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMasterContract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<returns>True If subscribed else False if already subscribed</returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.UnSubscribeQuotes(System.String,System.String)">
+	<summary>
+ UnSubscribes Quotes from Upstox Webscoket
+ </summary>
+	<param name="Exch">Exchange</param>
+	<param name="TrdSymbol">Trade Symbol</param>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidExchException">Exchange is Null or Invalid</exception>
+	<exception cref="T:UpstoxNet.Upstox.InvalidTrdSymbolException">Trade Symbol is Null or Invalid</exception>
+	<returns>True If unsubscribed else False if already unsubscribed or not subscribed</returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.StartWebSocket">
+	<summary>
+ Starts WebSocket for Streaming Quotes
+ <br/> Note Websocket automatically started after GetMasterContract Call and will reconnect automatically if network lost
+ <br/> You barely need this method. Call only if automatic reconnection fails.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMasterContract to download or wait for Symbolss download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>True if Started Websocket else False if WebSocket is already started</returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="M:UpstoxNet.Upstox.StopWebSocket">
+	<summary>
+ Stops WebSocket from Streaming Quotes
+<br/> This Functions is Provided as Optional.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMasterContract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox API</exception>
+	<returns>True if Stopped Websocket else False if WebSocket is already stopped or not running</returns>
+	<remarks> Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>You can catch all exception and can be used for Debugging. <br/> See also Exceptions List for all exceptions raised by this function.</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.Token">
+	<summary>
+ Get's the token
+ </summary>
+	<value>token</value>
+	<returns>token</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.Exch">
+	<summary>
+ Get's the exchange
+ </summary>
+	<value>exchange</value>
+	<returns>exchange</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.TrdSym">
+	<summary>
+ Get's the trade_symbol
+ </summary>
+	<value>trade_symbol</value>
+	<returns>trade_symbol</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.AvgBuyPrice">
+	<summary>
+ Get's the AvgBuyPrice
+ </summary>
+	<value>AvgBuyPrice</value>
+	<returns>AvgBuyPrice</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.AvgSellPrice">
+	<summary>
+ Get's the AvgSellPrice
+ </summary>
+	<value>AvgSellPrice</value>
+	<returns>AvgSellPrice</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.BuyQty">
+	<summary>
+ Get's the BuyQty
+ </summary>
+	<value>BuyQty</value>
+	<returns>BuyQty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.SellQty">
+	<summary>
+ Get's the SellQty
+ </summary>
+	<value>SellQty</value>
+	<returns>SellQty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.NetPl">
+	<summary>
+ Get's the NetPl
+ </summary>
+	<value>NetPl</value>
+	<returns>NetPl</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.MtmUpdateEventArgs.NetQty">
+	<summary>
+ Get's the NetQty
+ </summary>
+	<value>NetQty</value>
+	<returns>NetQty</returns>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.MtmUpdateEventArgs.#ctor(System.String,System.String,System.String,System.Double,System.Double,System.Int32,System.Int32,System.Double,System.Int32)">
+	<summary>
+ This Class is passed to MtmUpdateEvent as argument
+ </summary>
+	<param name="sExch">Exch</param>
+	<param name="sToken">Token</param>
+	<param name="sTrdSym">Trade Symbol</param>
+	<param name="sAvgBuyPrice">Avg Buy Price</param>
+	<param name="sAvgSellPrice">Avg Sell Price</param>
+	<param name="sBuyQty"> Buy Qty</param>
+	<param name="sSellQty">Sell Qty</param>
+	<param name="sNetPl">Net PL</param>
+	<param name="sNetQty">Net Qty</param>
+	<remarks>None</remarks>
+</member><member name="T:UpstoxNet.MtmUpdateEventArgs">
+	<summary>
+ This Class exposes properties for all positions fields which are manipulated internally by UpstoxNet Library from the available order details.
+ <br/>Also includes general properties exchange, symbol and token
+ </summary>
+	<remarks>None</remarks>
+</member><member name="T:UpstoxNet.Mode">
+	<summary>
+ Enum for Subscribe Quotes
+ <br/> LTP = 1
+ <br/> Full = 2
+ </summary>
+	<remarks></remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.Token">
+	<summary>
+ Get's the token
+ </summary>
+	<value>token</value>
+	<returns>token</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.Exch">
+	<summary>
+ Get's the exchange
+ </summary>
+	<value>exchange</value>
+	<returns>exchange</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.TrdSym">
+	<summary>
+ Get's the trade_symbol
+ </summary>
+	<value>trade_symbol</value>
+	<returns>trade_symbol</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.AvgBuyPrice">
+	<summary>
+ Get's the AvgBuyPrice
+ </summary>
+	<value>AvgBuyPrice</value>
+	<returns>AvgBuyPrice</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.AvgSellPrice">
+	<summary>
+ Get's the AvgSellPrice
+ </summary>
+	<value>AvgSellPrice</value>
+	<returns>AvgSellPrice</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.BuyQty">
+	<summary>
+ Get's the BuyQty
+ </summary>
+	<value>BuyQty</value>
+	<returns>BuyQty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.SellQty">
+	<summary>
+ Get's the SellQty
+ </summary>
+	<value>SellQty</value>
+	<returns>SellQty</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.NetPl">
+	<summary>
+ Get's the NetPl
+ </summary>
+	<value>NetPl</value>
+	<returns>NetPl</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.PositionUpdateEventArgs.NetQty">
+	<summary>
+ Get's the NetQty
+ </summary>
+	<value>NetQty</value>
+	<returns>NetQty</returns>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.PositionUpdateEventArgs.#ctor(System.String,System.String,System.String,System.Double,System.Double,System.Int32,System.Int32,System.Double,System.Int32)">
+	<summary>
+ This Class is passed to PositionUpdateEvent as argument
+ </summary>
+	<param name="sExch">Exch</param>
+	<param name="sToken">Token</param>
+	<param name="sTrdSym">Trade Symbol</param>
+	<param name="sAvgBuyPrice">Avg Buy Price</param>
+	<param name="sAvgSellPrice">Avg Sell Price</param>
+	<param name="sBuyQty"> Buy Qty</param>
+	<param name="sSellQty">Sell Qty</param>
+	<param name="sNetPl">Net PL</param>
+	<param name="sNetQty">Net Qty</param>
+	<remarks>None</remarks>
+</member><member name="T:UpstoxNet.PositionUpdateEventArgs">
+	<summary>
+ This Class exposes properties for all positions fields which are manipulated internally by UpstoxNet Library from the available order details.
+ <br/>Also includes general properties exchange, symbol and token
+ </summary>
+	<remarks>None</remarks>
+</member><member name="M:UpstoxNet.Upstox.RefreshRTDQuotes">
+	<summary>
+ By Default RTD server recieves data only when there is a change in the price.
+ <br/>To get any missing quotes, you may call this method.
+ <br/>This will send all quotes(Last available) to RTD server irrespective of whether it value changed or not.
+ </summary>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.SymbolDownloadException">Symbols not downloaded or download is in Progress.Call GetMastercontract to download or wait for Symbols download to Finish</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from api.upstox.com</exception>
+	<remarks>Donot call this method unnecessarily.
+ <br/>This method is provided for optional and for compatability.
+ <br/>Donot call this method in a loop
+ <br/>RTD Server will automatically receive new quotes as and when it arrives.
+ </remarks>
+</member><member name="P:UpstoxNet.Upstox.Api_Key">
+	<summary>
+ Get's or Set's API Key
+ </summary>
+	<example>
+ Dim Upstox As New Upstox
+ <br/>
+		<br/>Upstox.Api_Key = "aswax145xxxxxxxx"
+ </example>
+	<value>api_key</value>
+	<returns>API Key</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Api_Secret">
+	<summary>
+ Get's or Set's API Secret
+ </summary>
+	<example>
+ Dim Upstox As New Upstox
+ <br/>
+		<br/>Upstox.Api_Secret = "aswax145xxxxxxxx"
+ </example>
+	<value>api_secret</value>
+	<returns>API Secret</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Redirect_Url">
+	<summary>
+ Get's or Set's Redirect Url
+ </summary>
+	<example>
+ Dim Upstox As New Upstox
+ <br/>
+		<br/>Upstox.Redirect_Url = "https://howutrade.in"
+ </example>
+	<value>redirect_url</value>
+	<returns>Redirect Url</returns>
+	<remarks>It should match with your Redirect Url in the Upstox Developer Account</remarks>
+</member><member name="P:UpstoxNet.Upstox.Stream_Mode">
+	<summary>
+ Get's or Set's Stream Mode
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Stream_Mode = Mode.Full
+ </example>
+	<value>1-LTP|2-Full</value>
+	<returns>Stream Mode</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Snap_Mode">
+	<summary>
+ Get's or Set's Snap Mode
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Snap_Mode = Mode.Full
+ </example>
+	<value>1-LTP|2-Full</value>
+	<returns>Snap Mode</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Excel_Mode">
+	<summary>
+ Get's or Set's Excel Mode
+ <br/> If Excel Mode is enabled, you will get data in Excel through RTD.Bydefault, it is enabled.
+ <br/> Disable it if you are not using excel.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Excel_Mode = True
+ </example>
+	<value>True or False</value>
+	<returns>Excel Mode</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Email_Alerts">
+	<summary>
+ Get's or Set's Email Alerts Status
+ <br/> If  enabled, you will get email on Position and order Update.Bydefault, it is not enabled.
+ <br/> Disable it if you do not want Alerts.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Email_Alerts = True
+ </example>
+	<value>True or False</value>
+	<returns>Email Alert Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.SMS_Alerts">
+	<summary>
+ Get's or Set's SMS Alerts Status
+ <br/> If  enabled, you will get SMS on Position and order Update.Bydefault, it is not enabled.
+ <br/> Disable it if you do not want Alerts.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.SMS_Alerts = True
+ </example>
+	<value>True or False</value>
+	<returns>SMS Alert Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Email_Id_Alerts">
+	<summary>
+ Get's or Set's Email Id For Alerts
+ <br/> This Email Id will be used to send email alerts on Position and Order Update.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Email_Id_Alerts = "user@gmail.com"
+ </example>
+	<value>String</value>
+	<returns>Email Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Mobile_No_Alerts">
+	<summary>
+ Get's or Set's Mobile No For Alerts
+ <br/> This Mobile No will be used to send sms alerts on Position and Order Update.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Mobile_No_Alerts = "9988776655"
+ </example>
+	<value>String</value>
+	<returns>Mobile No</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Order_Notification">
+	<summary>
+ Get's or Set's Order Notification Status
+ <br/> If Order Notification is enabled, you will get Order Update as Tray Notification.Bydefault, it is enabled.
+ <br/> Disable it if you do not want notification.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Order_Notification = True
+ </example>
+	<value>True or False</value>
+	<returns>Order Notification Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Position_Notification">
+	<summary>
+ Get's or Set's Position Notification Status
+ <br/> If Position Notification is enabled, you will get Position Update as Tray Notification.Bydefault, it is enabled.
+ <br/> Disable it if you do not want notification.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Position_Notification = True
+ </example>
+	<value>True or False</value>
+	<returns>Position Notification Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.App_Notification">
+	<summary>
+ Get's or Set's App Notification Status
+ <br/> If App Notification is enabled, you will get App Events like Webscoket Connected etc as Tray Notification.Bydefault, it is enabled.
+ <br/> Disable it if you do not want notification.
+ </summary>
+	<example>
+ Dim Upstox As Upstox = New Upstox
+ <br/>
+		<br/>Upstox.App_Notification = True
+ </example>
+	<value>True or False</value>
+	<returns>App Notification Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Access_Code">
+	<summary>
+ Get's Access Code
+ </summary>
+	<value>access_code</value>
+	<returns>Access Code</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Access_Token">
+	<summary>
+ Get's Authorization Code
+ </summary>
+	<value>authorization_code</value>
+	<returns>Authorization Code</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Root_EndPoint">
+	<summary>
+ Get's Root EndPoint
+ </summary>
+	<value>root_endpoint</value>
+	<returns>Root EndPoint</returns>
+	<remarks>Default Value https://api.upstox.com</remarks>
+</member><member name="P:UpstoxNet.Upstox.Login_Url">
+	<summary>
+ Get's Login Url
+ </summary>
+	<value>login_url</value>
+	<returns>Login Url</returns>
+	<remarks>Default Value https://api.upstox.com</remarks>
+</member><member name="P:UpstoxNet.Upstox.Client_Id">
+	<summary>
+ Get's Client Id
+ </summary>
+	<value>client_id</value>
+	<returns>Client Id</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Client_Name">
+	<summary>
+ Get's Client Name
+ </summary>
+	<value>client_name</value>
+	<returns>Client Name</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Client_Email">
+	<summary>
+ Get's Client Email
+ </summary>
+	<value>client_email</value>
+	<returns>Client Email</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Client_Phone">
+	<summary>
+ Get's Client Phone
+ </summary>
+	<value>client_phone</value>
+	<returns>Client Phone</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Login_Status">
+	<summary>
+ Get's Login Status
+ </summary>
+	<value>True or False</value>
+	<returns>Login Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Login_Response">
+	<summary>
+ Get's Login Response
+ </summary>
+	<value>Success|No Network|Invalid API Key|Login Aborted By User|Unauthorized Access|OMS Down|Internal Server Error|Missing Authentication Token|Invalid Redirect Url|Invalid Request|Access Denied|Login Timedout|Unknown Error</value>
+	<returns>Login Response</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Logout_Status">
+	<summary>
+ Get's Logout Status
+ </summary>
+	<value>True or False</value>
+	<returns>Logout Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Symbol_Download_Status">
+	<summary>
+ Get's Symbol Download Status
+ </summary>
+	<value>True or False</value>
+	<returns>Symbol Download Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Authorization_Status">
+	<summary>
+ Get's Authorization Status
+ </summary>
+	<value>True or False</value>
+	<returns>Authorization Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.IsOCOEnabled">
+	<summary>
+ Get's User OCO Status
+ </summary>
+	<value>True or False</value>
+	<returns>User OCO Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.IsCOEnabled">
+	<summary>
+ Get's User CO Status
+ </summary>
+	<value>True or False</value>
+	<returns>User CO Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.IsActiveClient">
+	<summary>
+ Get's User Account Status
+ </summary>
+	<value>True or False</value>
+	<returns>User Account Status</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Exchange_Enabled">
+	<summary>
+ Get's Exchanges Enabled For User
+ </summary>
+	<value>NSE_EQ,BSE_EQ,NSE_FO,MCX_FO</value>
+	<returns>Exchanges Enabled For the User with Comma Seperated</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.Product_Enabled">
+	<summary>
+ Get's Products Enabled For User
+ </summary>
+	<value>D,I,OCO,CO</value>
+	<returns>Products Enabled For the User with Comma Seperated</returns>
+	<remarks>None</remarks>
+</member><member name="P:UpstoxNet.Upstox.IsWebSockLive">
+	<summary>
+ Get's Websocket Status
+ </summary>
+	<value>True or False</value>
+	<returns>Websocket Status</returns>
+	<remarks>None</remarks>
+</member><member name="E:UpstoxNet.Upstox.QuotesReceivedEvent">
+	<summary>
+ This is Raised whenever new data arrives from api.upstox.com
+ </summary>
+	<param name="sender">Nothing</param>
+	<param name="e">QuotesReceivedEventArgs</param>
+	<remarks></remarks>
+</member><member name="E:UpstoxNet.Upstox.OrderUpdateEvent">
+	<summary>
+ This is Raised whenever Order Updates arrives from api.upstox.com
+ </summary>
+	<param name="sender">Nothing</param>
+	<param name="e">OrderUpdateEventArgs</param>
+	<remarks></remarks>
+</member><member name="E:UpstoxNet.Upstox.TradeUpdateEvent">
+	<summary>
+ This is Raised whenever Trade Updates arrives from api.upstox.com
+ </summary>
+	<param name="sender">Nothing</param>
+	<param name="e">TradeUpdateEventArgs</param>
+	<remarks></remarks>
+</member><member name="E:UpstoxNet.Upstox.PositionUpdateEvent">
+	<summary>
+ This is Raised whenever any changes in the positions
+ </summary>
+	<param name="sender">Nothing</param>
+	<param name="e">PositionUpdateEventArgs</param>
+	<remarks>Note:This position details is not supplied by upstox.It is internally calculated by UpstoxNet Library using the Order Details Available</remarks>
+</member><member name="E:UpstoxNet.Upstox.MtmUpdateEvent">
+	<summary>
+ This is Raised whenever any changes in the MTM 
+ </summary>
+	<param name="sender">Nothing</param>
+	<param name="e">MtmUpdateEventArgs</param>
+	<remarks>Note:This position details is not supplied by upstox.It is internally calculated by UpstoxNet Library using the Order Details Available</remarks>
+</member><member name="M:UpstoxNet.Upstox.Finalize">
+	<summary>
+ Finalize
+ </summary>
+	<remarks></remarks>
+</member><member name="T:UpstoxNet.Upstox">
+	<summary>
+ This Class exposes all Properties,Methods,Events and Functions supported by Upstox API
+ </summary>
+	<example>
+ ***** Using in Visual Studio *****
+ <br/>'Add reference to UpstoxNet.dll in your project.
+ <br/>Imports UpstoxNet
+ <br/>
+		<br/> Public Class SampleApp 
+ <br/> Dim Upstox as Upstox = New Upstox 'Creates a New Instance of Upstox
+ <br/> End Class
+ <br/> 
+ <br/>***** Using in Excel *****
+ <br/>'Early Binding Example
+ <br/>'Add reference to UpstoxNet.dll in Visaul Basic Editor by 
+ <br/>Menu --&gt; Tools --&gt; Add Reference --&gt; Select 'DotNet Library For Upstox API'
+ <br/>
+		<br/>Dim Upstox as New Upstox 'Creates a New Instance of Upstox
+ <br/>
+		<br/>'Late Binding without adding Reference
+ <br/> Dim Upstox as Object
+ <br/> Set Upstox = CreateObject("UpstoxNet.Upstox")
+ </example>
+	<remarks>
+		<br/>To use with Excel, You need to Register the UpstoxNet.dll using Regasm as per your Excel bit.
+ <br/>You can download the UpstoxNet.zip file from https://howutrade.in and follow the notes.
+ <br/>Batch file to register the DLL is included in the zip file.
+ <br/>You can get start with our Sample Excel Sheet or Sample App.
+ </remarks>
+</member><member name="M:UpstoxNet.Upstox.GetAccessToken">
+	<summary>
+ Retrieves Access Token From the api.upstox.com
+ </summary>
+	<example>
+ Dim Upstox as Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Api_Key = "xdefvsj455xxxx"
+ <br/>Upstox.Api_Secret = "sghhyrteyens"
+ <br/>
+		<br/>Try
+ <br/>Upstox.Login()
+ <br/>Catch ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+		<br/> If Upstox.Login_Status then 'Call GetAccessToken Only If Login_Status is True
+ <br/> Try
+ <br/>Upstox.GetAccessToken()
+ <br/>Catch Ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+	</example>
+	<returns>True or False</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox Server</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>This call will set the Access_Token Property automatically</remarks>
+</member><member name="M:UpstoxNet.Upstox.GetAccessToken(System.String)">
+	<summary>
+ Retrieves Access Token From the api.upstox.com
+ </summary>
+	<param name="code">code received in redirect url after successful login</param>
+	<example>
+ Dim Upstox as Upstox = New Upstox
+ <br/>
+		<br/>Upstox.Api_Key = "xdefvsj455xxxx"
+ <br/>Upstox.Api_Secret = "sghhyrteyens"
+ <br/>
+		<br/>Try
+ <br/>Upstox.Login()
+ <br/>Catch ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+		<br/> If Upstox.Login_Status then 'Call GetAccessToken Only If Login_Status is True
+ <br/> Try
+ <br/>Upstox.GetAccessToken("sjashjaskjahajshasajsshhjassjashj")
+ <br/>Catch Ex as Exception
+ <br/>'ToDo Add Any Exception Handling Procedures
+ <br/>End Try
+ <br/>
+	</example>
+	<returns>True or False</returns>
+	<exception cref="T:UpstoxNet.Upstox.UserNotLoggedInException">User not Logged-In</exception>
+	<exception cref="T:UpstoxNet.Upstox.UserLoggedOutException">User Logged-Out from the current session.Restart App or Create New Instance of Upstox to get New Session Id from Upstox.Trade</exception>
+	<exception cref="T:UpstoxNet.Upstox.UpstoxServerException">Other Exceptions Raised by Upstox Server</exception>
+	<remarks>Call this function only in Try..Catch..End Try Block as it raises Exception for Null or Invalid values <br/>This call will set the Access_Token Property automatically</remarks>
+</member>
+</members>
+</doc>
