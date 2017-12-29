@@ -4,12 +4,17 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UpstoxNet;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.qrcode;
 using UpStoxWindows.Helper;
+using UpstoxNet;
 
 namespace UpStoxWindows
 {
@@ -24,10 +29,10 @@ namespace UpStoxWindows
 
         private void Button1_Click_1(object sender, EventArgs e)
         {
-            upstox.Api_Key = "5ut9JIEYay4ruHyvd4PCW9QI4FzxDhMQ13Eq6ImD";
-            upstox.Api_Secret = "srnlctcx79";
+            upstox.Api_Key = "hKiZa1pkqf8012fndXZjE4RsT53xCnalaZWHPRKu";
+            upstox.Api_Secret = "ttfr9t59rg";
             upstox.Redirect_Url = "http://upstox.com";
-            upstox.Stream_Mode = Mode.Full;
+            upstox.Stream_Mode = UpstoxNet.Mode.Full;
             try
             {
                 upstox.Login();
@@ -87,103 +92,19 @@ namespace UpStoxWindows
 
         private void button24_Click(object sender, EventArgs e)
         {
-            var stockList = new List<Stock>();
-            var fromDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 4, 9, 20, 0);
-            var toDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 4, 9, 22, 0);
+            const int differenceInTime = 2;
+            const double profit = 1;
             try
             {
-                var symbolsNSE = upstox.GetSymbols("NSE_EQ");
-                //var batchHistory = upstox.GetHistDataBatch();
+                var symbolsNse = upstox.GetSymbols("NSE_EQ");
                 var symbols = MISTrade().ToList();
+                var stockListResultData = new List<Stock>();
+                const string stocks = "";
+                var positions = upstox.GetPositions().Split('\n').Skip(1).ToList();
 
-                foreach (var symbol in symbols)
-                {
-                    if (symbolsNSE.Contains(symbol))
-                    {
-                        var data = upstox.GetHistData("NSE_EQ", symbol, "1MINUTE", fromDateTime, toDateTime, false).ToList();
-                        //  var getCurrentStatus = upstox.GetISIN("NSE_EQ", symbol);
+                PlaceOrder(symbols, symbolsNse, differenceInTime, stocks, positions, profit, stockListResultData);
 
-                       
-                        if (data != null && data[0] != "DATETIME")
-                        {
-                            foreach (var symboldata in data)
-                            {
-                                var splitData = symboldata.Split(',');
-                                if (splitData[0] != "DATETIME")
-                                {
-                                    stockList.Add(new Stock()
-                                    {
-                                        Exchange = "NSE_EQ",
-                                        //Date = splitData[0],
-                                        //Time = splitData[1],
-                                        DateTime = DateTime.Parse(splitData[0]),
-                                        Open = splitData[1],
-                                        High = splitData[2],
-                                        Low = splitData[3],
-                                        Close = splitData[4],
-                                        Volume = splitData[5],
-                                        CP = splitData[6],
-                                        Symbol = symbol
-                                    });
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-                var timeData = stockList.Where(d => d.DateTime >= fromDateTime && d.DateTime <= toDateTime).ToList();
-                var result = new List<Stock>();
-                foreach (var item in symbols)
-                {
-                    var symbolData = timeData.Where(d => d.Symbol.ToUpper() == item.ToUpper()).ToList();
-                    if (symbolData.Any())
-                    {
-                        var firstItem = symbolData.FirstOrDefault();
-                        var lastItem = symbolData.LastOrDefault();
-                        var firstOpen = Convert.ToDouble(firstItem?.Open);
-                        var lastOpen = Convert.ToDouble(lastItem?.Open);
-                        if (firstOpen - lastOpen >= 1.5 ){
-                            result.Add(
-                                new Stock()
-                                {
-                                    Open = firstItem.Open,
-                                    Symbol = item,
-                                    DateTime = firstItem.DateTime,
-                                    CP = firstItem.CP,
-                                    Close = firstItem.Close,
-                                    Exchange = firstItem.Exchange,
-                                    High = firstItem.High,
-                                    Low = firstItem.Low,
-                                    Volume = firstItem.Volume,
-                                    Call = "SELL"
-                                });
-                        }
-                        if (lastOpen - firstOpen >= 1.5)
-                        {
-                            result.Add(
-                                new Stock()
-                                {
-                                    Open = firstItem.Open,
-                                    Symbol = item,
-                                    DateTime = firstItem.DateTime,
-                                    CP = firstItem.CP,
-                                    Close = firstItem.Close,
-                                    Exchange = firstItem.Exchange,
-                                    High = firstItem.High,
-                                    Low = firstItem.Low,
-                                    Volume = firstItem.Volume,
-                                    Call = "BUY"
-                                });
-                        }
-
-                    }
-                }
-                //foreach (var item in timeData)
-                //{
-                //    var firstHalf = item.DateTime
-                //}//     dataGridViewStock.AutoGenerateColumns = true;
-                var list = new BindingList<Stock>(result.ToList());
+                var list = new BindingList<Stock>(stockListResultData.ToList());
                 var source = new BindingSource(list, null);
                 dataGridViewStock.DataSource = source;
             }
@@ -193,14 +114,121 @@ namespace UpStoxWindows
             }
         }
 
+        private void PlaceOrder(List<string> symbols, string symbolsNse, int differenceInTime, string stocks, List<string> positions, double profit, List<Stock> stockListResultData)
+        {
+            foreach (var symbol in symbols)
+            {
+                if (symbolsNse.Contains(symbol))
+                {
+                    var fromDateTime = DateTime.Now.AddMinutes(-differenceInTime).AddSeconds(-(DateTime.Now.Second));
+                    var toDateTime = fromDateTime.AddMinutes(1);
+                    //   new StartDateTime(StartDateTime.Now.Year, StartDateTime.Now.Month, StartDateTime.Now.Day, StartDateTime.Now.Hour, StartDateTime.Now.Minute + differenceInTime, 0);
+                    var data = upstox.GetHistData("NSE_EQ", symbol, "1MINUTE", fromDateTime, toDateTime, false).ToList();
+                    var stockListData = new List<Stock>();
+
+                    foreach (var stock in data.Skip(1))
+                    {
+                        var stocksplitData = stock.Split(',');
+                        stockListData.Add(new Stock()
+                        {
+                            Exchange = "NSE_EQ",
+                            Symbol = symbol,
+                            StartDateTime = DateTime.Parse(stocksplitData[0]),
+                            EndDateTime = toDateTime,
+                            Open = stocksplitData[1],
+                            High = stocksplitData[2],
+                            Low = stocksplitData[3],
+                            Close = stocksplitData[4],
+                            Volume = stocksplitData[5],
+                            CP = stocksplitData[6],
+                            StockString = stocks
+                        });
+                    }
+                    var timeStartData = stockListData.FirstOrDefault(c => c.StartDateTime.Hour == fromDateTime.Hour && c.StartDateTime.Minute == fromDateTime.Minute);
+                    var timeEndData = stockListData.FirstOrDefault(c => c.StartDateTime.Hour == toDateTime.Hour && c.StartDateTime.Minute == toDateTime.Minute);
+                    var positionList = (from item in positions
+                                        let positionData = item.Split(',')
+                                        where item != string.Empty
+                                        select new Stock()
+                                        {
+                                            Exchange = positionData[0],
+                                            Symbol = positionData[2],
+                                            NetQuantity = Convert.ToDouble(positionData[14])
+                                        }).ToList();
+
+                    if (timeStartData != null && timeEndData != null)
+                    {
+                        var profitHighMargin = Convert.ToDouble(timeEndData.High) - Convert.ToDouble(timeStartData.High);
+                        var profitLowMargin = Convert.ToDouble(timeEndData.Low) - Convert.ToDouble(timeStartData.Low) > 0;
+                        var ltp = upstox.GetSnapLtp("NSE_EQ", timeStartData.Symbol);
+                        var isLtpUp = ltp > Convert.ToDouble(timeEndData.High);
+                        var isLtpDown = ltp > Convert.ToDouble(timeEndData.Low);
+                        if (profitHighMargin >= profit && profitLowMargin && profitHighMargin < 2 && isLtpUp)
+                        {
+                            stockListResultData.Add(new Stock()
+                            {
+                                Exchange = "NSE_EQ",
+                                Symbol = symbol,
+                                StartDateTime = timeStartData.StartDateTime,
+                                EndDateTime = toDateTime,
+                                Open = timeStartData.Open,
+                                High = timeStartData.High,
+                                Low = timeStartData.Low,
+                                Close = timeStartData.Close,
+                                Call = "BUY",
+                                Volume = timeStartData.Volume,
+                                CP = timeStartData.CP,
+                                StockString = stocks
+                            });
+                            var buyPrice = Convert.ToDouble(timeEndData.Low);
+                            var currentBuyLtp = upstox.GetSnapLtp("NSE_EQ", timeStartData.Symbol);
+                            //Place order if not in position
+
+                            if ((positionList.Any(dd => dd.Symbol == symbol && dd.NetQuantity == 0)) || (positionList.All(dd => dd.Symbol != symbol)))
+                                upstox.PlaceOCO("NSE_EQ", symbol, "B", 1, currentBuyLtp, 1, 3, 1);
+
+                        }
+                        if (profitHighMargin <= -profit && profitHighMargin >= -2 && !profitLowMargin && isLtpDown)
+                        {
+                            stockListResultData.Add(new Stock()
+                            {
+                                Exchange = "NSE_EQ",
+                                Symbol = symbol,
+                                StartDateTime = timeStartData.StartDateTime,
+                                EndDateTime = toDateTime,
+                                Open = timeStartData.Open,
+                                High = timeStartData.High,
+                                Low = timeStartData.Low,
+                                Close = timeStartData.Close,
+                                Call = "SELL",
+                                Volume = timeStartData.Volume,
+                                CP = timeStartData.CP,
+                                StockString = stocks
+                            });
+                            var currentltp = upstox.GetSnapLtp("NSE_EQ", timeStartData.Symbol);
+                            var buyPrice = Convert.ToDouble(currentltp);
+                            //Place order if not in position
+                            if ((positionList.Any(dd => dd.Symbol == symbol && dd.NetQuantity == 0)) || (positionList.All(dd => dd.Symbol != symbol)))
+                                upstox.PlaceOCO("NSE_EQ", symbol, "S", 1, buyPrice, 1, 3, 1);
+                        }
+                    }
+                }
+            }
+        }
+
 
         public string[] MISTrade()
         {
-            var data = "3MINDIA,\r\nAARTIIND,\r\nABAN,\r\nABB,\r\nABFRL,\r\nACC,\r\nADANIENT,\r\nADANIPORTS,\r\nADANIPOWER,\r\nAJANTPHARM,\r\nAKZOINDIA,\r\nALBK,\r\nALKEM,\r\nALLCARGO,\r\nAMARAJABAT,\r\nAMBUJACEM,\r\nANDHRABANK,\r\nAPLLTD,\r\nAPOLLOHOSP,\r\nAPOLLOTYRE,\r\nARVIND,\r\nASAHIINDIA,\r\nASHOKLEY,\r\nASIANPAINT,\r\nASTRAZEN,\r\nATFL,\r\nATUL,\r\nAUBANK,\r\nAUROPHARMA,\r\nAUTOAXLES,\r\nAXISBANK,\r\nBAJAJ-AUTO,\r\nBAJAJCORP,\r\nBAJAJELEC,\r\nBAJAJFINSV,\r\nBAJAJHIND,\r\nBAJAJHLDNG,\r\nBAJFINANCE,\r\nBALKRISIND,\r\nBALRAMCHIN,\r\nBANCOINDIA,\r\nBANKBARODA,\r\nBANKBEES,\r\nBANKINDIA,\r\nBATAINDIA,\r\nBEL,\r\nBEML,\r\nBERGEPAINT,\r\nBGRENERGY,\r\nBHARATFIN,\r\nBHARATFORG,\r\nBHARTIARTL,\r\nBHEL,\r\nBIOCON,\r\nBLUEDART,\r\nBOSCHLTD,\r\nBPCL,\r\nBRITANNIA,\r\nBRNL,\r\nBSE,\r\nCADILAHC,\r\nCANBK,\r\nCANFINHOME,\r\nCAPACITE,\r\nCAPF,\r\nCASTROLIND,\r\nCDSL,\r\nCEATLTD,\r\nCENTRALBK,\r\nCENTURYPLY,\r\nCENTURYTEX,\r\nCESC,\r\nCGPOWER,\r\nCHENNPETRO,\r\nCHOLAFIN,\r\nCIPLA,\r\nCOALINDIA,\r\nCOCHINSHIP,\r\nCOFFEEDAY,\r\nCOLPAL,\r\nCONCOR,\r\nCOROMANDEL,\r\nCOX&KINGS,\r\nCRISIL,\r\nCROMPTON,\r\nCUB,\r\nCUMMINSIND,\r\nCYIENT,\r\nDABUR,\r\nDALMIABHA,\r\nDBCORP,\r\nDBREALTY,\r\nDCBBANK,\r\nDCMSHRIRAM,\r\nDHFL,\r\nDIAMONDYD,\r\nDISHTV,\r\nDIVISLAB,\r\nDIXON,\r\nDLF,\r\nDMART,\r\nDRREDDY,\r\nECLERX,\r\nEDELWEISS,\r\nEICHERMOT,\r\nEIDPARRY,\r\nEIHOTEL,\r\nEMAMILTD,\r\nENDURANCE,\r\nENGINERSIN,\r\nEQUITAS,\r\nERIS,\r\nESCORTS,\r\nEVEREADY,\r\nEXIDEIND,\r\nFEDERALBNK,\r\nFEL,\r\nFINCABLES,\r\nFORTIS,\r\nFRETAIL,\r\nGAIL,\r\nGANECOS,\r\nGATI,\r\nGDL,\r\nGEPIL,\r\nGESHIP,\r\nGICHSGFIN,\r\nGICRE,\r\nGILLETTE,\r\nGLAXO,\r\nGLENMARK,\r\nGMRINFRA,\r\nGNA,\r\nGNFC,\r\nGODREJAGRO,\r\nGODREJCP,\r\nGODREJIND,\r\nGODREJPROP,\r\nGOLDBEES,\r\nGPPL,\r\nGRANULES,\r\nGRASIM,\r\nGREAVESCOT,\r\nGRUH,\r\nGSFC,\r\nGSKCONS,\r\nGSPL,\r\nGTPL,\r\nGUJALKALI,\r\nGUJFLUORO,\r\nGUJGASLTD,\r\nHAVELLS,\r\nHCC,\r\nHCLTECH,\r\nHDFC,\r\nHDFCBANK,\r\nHDIL,\r\nHEIDELBERG,\r\nHEROMOTOCO,\r\nHEXAWARE,\r\nHGS,\r\nHIKAL,\r\nHINDALCO,\r\nHINDPETRO,\r\nHINDUNILVR,\r\nHINDZINC,\r\nHONAUT,\r\nHOTELEELA,\r\nHSCL,\r\nHSIL,\r\nHUDCO,\r\nIBREALEST,\r\nIBULHSGFIN,\r\nICICIBANK,\r\nICICIGI,\r\nICICIPRULI,\r\nICIL,\r\nIDBI,\r\nIDEA,\r\nIDFC,\r\nIDFCBANK,\r\nIEX,\r\nIFCI,\r\nIGL,\r\nIGPL,\r\nIIFL,\r\nIL&FSTRANS,\r\nINDHOTEL,\r\nINDIACEM,\r\nINDIANB,\r\nINDIGO,\r\nINDUSINDBK,\r\nINFIBEAM,\r\nINFRATEL,\r\nINFY,\r\nINOXLEISUR,\r\nINOXWIND,\r\nINTELLECT,\r\nIOB,\r\nIOC,\r\nIPCALAB,\r\nIRB,\r\nITC,\r\nJAGRAN,\r\nJAMNAAUTO,\r\nJETAIRWAYS,\r\nJINDALPOLY,\r\nJINDALSTEL,\r\nJISLJALEQS,\r\nJKCEMENT,\r\nJKIL,\r\nJKPAPER,\r\nJKTYRE,\r\nJPASSOCIAT,\r\nJSL,\r\nJSLHISAR,\r\nJSWENERGY,\r\nJSWSTEEL,\r\nJUBILANT,\r\nJUBLFOOD,\r\nJUSTDIAL,\r\nJYOTHYLAB,\r\nKAJARIACER,\r\nKALPATPOWR,\r\nKANSAINER,\r\nKARURVYSYA,\r\nKEC,\r\nKEI,\r\nKESORAMIND,\r\nKHADIM,\r\nKIRLOSENG,\r\nKOKUYOCMLN,\r\nKOTAKBANK,\r\nKOTAKNIFTY,\r\nKPIT,\r\nKRBL,\r\nKSCL,\r\nKTKBANK,\r\nKWALITY,\r\nL&TFH,\r\nLALPATHLAB,\r\nLEEL,\r\nLGBBROSLTD,\r\nLICHSGFIN,\r\nLINDEINDIA,\r\nLIQUIDBEES,\r\nLOVABLE,\r\nLT,\r\nLUPIN,\r\nM&M,\r\nM&MFIN,\r\nM100,\r\nM50,\r\nMAGMA,\r\nMAHINDCIE,\r\nMAHLOG,\r\nMAJESCO,\r\nMANALIPETC,\r\nMANAPPURAM,\r\nMANGALAM,\r\nMANINFRA,\r\nMANPASAND,\r\nMARICO,\r\nMARKSANS,\r\nMARUTI,\r\nMASFIN,\r\nMATRIMONY,\r\nMCDOWELL-N,\r\nMCLEODRUSS,\r\nMCX,\r\nMEGH,\r\nMERCATOR,\r\nMFSL,\r\nMGL,\r\nMINDAIND,\r\nMINDTREE,\r\nMOIL,\r\nMOLDTKPAC,\r\nMOTHERSUMI,\r\nMPHASIS,\r\nMRF,\r\nMRPL,\r\nMUKANDLTD,\r\nMUTHOOTFIN,\r\nNATIONALUM,\r\nNAUKRI,\r\nNBCC,\r\nNCC,\r\nNESTLEIND,\r\nNETWORK18,\r\nNFL,\r\nNH,\r\nNHPC,\r\nNIACL,\r\nNIF100IWIN,\r\nNIFTYBEES,\r\nNIFTYIWIN,\r\nNIITLTD,\r\nNIITTECH,\r\nNLCINDIA,\r\nNMDC,\r\nNOCIL,\r\nNRBBEARING,\r\nNTPC,\r\nOBEROIRLTY,\r\nOFSS,\r\nOIL,\r\nOMAXE,\r\nONGC,\r\nORIENTBANK,\r\nORIENTCEM,\r\nPAGEIND,\r\nPARAGMILK,\r\nPCJEWELLER,\r\nPEL,\r\nPERSISTENT,\r\nPETRONET,\r\nPFC,\r\nPFIZER,\r\nPGHH,\r\nPHOENIXLTD,\r\nPIDILITIND,\r\nPIIND,\r\nPNB,\r\nPNBHOUSING,\r\nPOLYPLEX,\r\nPOWERGRID,\r\nPRAKASH,\r\nPRESTIGE,\r\nPTC,\r\nPVR,\r\nQUICKHEAL,\r\nRADICO,\r\nRADIOCITY,\r\nRAJESHEXPO,\r\nRALLIS,\r\nRAMCOCEM,\r\nRAMCOIND,\r\nRAYMOND,\r\nRBLBANK,\r\nRCF,\r\nRCOM,\r\nRECLTD,\r\nRELAXO,\r\nRELCAPITAL,\r\nRELIANCE,\r\nRELINFRA,\r\nREPCOHOME,\r\nRICOAUTO,\r\nRKFORGE,\r\nRNAM,\r\nRNAVAL,\r\nROLTA,\r\nRPOWER,\r\nSADBHAV,\r\nSAIL,\r\nSALASAR,\r\nSALZERELEC,\r\nSANGHIIND,\r\nSANOFI,\r\nSAREGAMA,\r\nSBILIFE,\r\nSBIN,\r\nSCHAND,\r\nSCI,\r\nSHANKARA,\r\nSHARDAMOTR,\r\nSHRIRAMCIT,\r\nSICAL,\r\nSIEMENS,\r\nSINTEX,\r\nSIS,\r\nSJVN,\r\nSKFINDIA,\r\nSNOWMAN,\r\nSOBHA,\r\nSOLARINDS,\r\nSOUTHBANK,\r\nSPARC,\r\nSPTL,\r\nSREINFRA,\r\nSRF,\r\nSRTRANSFIN,\r\nSTAR,\r\nSUNDARMFIN,\r\nSUNDRMFAST,\r\nSUNPHARMA,\r\nSUNTECK,\r\nSUNTV,\r\nSUPREMEIND,\r\nSUZLON,\r\nSYMPHONY,\r\nSYNDIBANK,\r\nSYNGENE,\r\nTATACHEM,\r\nTATACOFFEE,\r\nTATACOMM,\r\nTATAELXSI,\r\nTATAGLOBAL,\r\nTATAINVEST,\r\nTATAMOTORS,\r\nTATAMTRDVR,\r\nTATAPOWER,\r\nTATASPONGE,\r\nTATASTEEL,\r\nTBZ,\r\nTCI,\r\nTCS,\r\nTECHM,\r\nTEJASNET,\r\nTHERMAX,\r\nTHOMASCOOK,\r\nTHYROCARE,\r\nTIFIN,\r\nTIRUMALCHM,\r\nTITAN,\r\nTNPETRO,\r\nTNPL,\r\nTORNTPHARM,\r\nTORNTPOWER,\r\nTRENT,\r\nTRIDENT,\r\nTTKPRESTIG,\r\nTV18BRDCST,\r\nTVSMOTOR,\r\nTWL,\r\nUBL,\r\nUCOBANK,\r\nUJJIVAN,\r\nULTRACEMCO,\r\nUNIONBANK,\r\nUPL,\r\nVAKRANGEE,\r\nVEDL,\r\nVENKEYS,\r\nVGUARD,\r\nVIJAYABANK,\r\nVISHNU,\r\nVOLTAS,\r\nVTL,\r\nWABCOINDIA,\r\nWELENT,\r\nWHIRLPOOL,\r\nWIPRO,\r\nWOCKPHARMA,\r\nWONDERLA,\r\nYESBANK,\r\nZEEL";
-            //var data = "3MINDIA,\r\nAARTIIND";
-            var trade = data.Replace("\r\n", "");
-            return trade.Split(',');
+            var allIntradayData = "3MINDIA,AARTIIND,ABAN,ABB,ABFRL,ACC,ADANIENT,ADANIPORTS,ADANIPOWER,AJANTPHARM,AKZOINDIA,ALBK,ALKEM,ALLCARGO,AMARAJABAT,AMBUJACEM,ANDHRABANK,APLLTD,APOLLOHOSP,APOLLOTYRE,ARVIND,ASAHIINDIA,ASHOKLEY,ASIANPAINT,ASTRAZEN,ATFL,ATUL,AUBANK,AUROPHARMA,AUTOAXLES,AXISBANK,BAJAJ-AUTO,BAJAJCORP,BAJAJELEC,BAJAJFINSV,BAJAJHIND,BAJAJHLDNG,BAJFINANCE,BALKRISIND,BALRAMCHIN,BANCOINDIA,BANKBARODA,BANKBEES,BANKINDIA,BATAINDIA,BEL,BEML,BERGEPAINT,BGRENERGY,BHARATFIN,BHARATFORG,BHARTIARTL,BHEL,BIOCON,BLUEDART,BOSCHLTD,BPCL,BRITANNIA,BRNL,BSE,CADILAHC,CANBK,CANFINHOME,CAPACITE,CAPF,CASTROLIND,CDSL,CEATLTD,CENTRALBK,CENTURYPLY,CENTURYTEX,CESC,CGPOWER,CHENNPETRO,CHOLAFIN,CIPLA,COALINDIA,COCHINSHIP,COFFEEDAY,COLPAL,CONCOR,COROMANDEL,COX&KINGS,CRISIL,CROMPTON,CUB,CUMMINSIND,CYIENT,DABUR,DALMIABHA,DBCORP,DBREALTY,DCBBANK,DCMSHRIRAM,DHFL,DIAMONDYD,DISHTV,DIVISLAB,DIXON,DLF,DMART,DRREDDY,ECLERX,EDELWEISS,EICHERMOT,EIDPARRY,EIHOTEL,EMAMILTD,ENDURANCE,ENGINERSIN,EQUITAS,ERIS,ESCORTS,EVEREADY,EXIDEIND,FEDERALBNK,FEL,FINCABLES,FORTIS,FRETAIL,GAIL,GANECOS,GATI,GDL,GEPIL,GESHIP,GICHSGFIN,GICRE,GILLETTE,GLAXO,GLENMARK,GMRINFRA,GNA,GNFC,GODREJAGRO,GODREJCP,GODREJIND,GODREJPROP,GOLDBEES,GPPL,GRANULES,GRASIM,GREAVESCOT,GRUH,GSFC,GSKCONS,GSPL,GTPL,GUJALKALI,GUJFLUORO,GUJGASLTD,HAVELLS,HCC,HCLTECH,HDFC,HDFCBANK,HDIL,HEIDELBERG,HEROMOTOCO,HEXAWARE,HGS,HIKAL,HINDALCO,HINDPETRO,HINDUNILVR,HINDZINC,HONAUT,HOTELEELA,HSCL,HSIL,HUDCO,IBREALEST,IBULHSGFIN,ICICIBANK,ICICIGI,ICICIPRULI,ICIL,IDBI,IDEA,IDFC,IDFCBANK,IEX,IFCI,IGL,IGPL,IIFL,IL&FSTRANS,INDHOTEL,INDIACEM,INDIANB,INDIGO,INDUSINDBK,INFIBEAM,INFRATEL,INFY,INOXLEISUR,INOXWIND,INTELLECT,IOB,IOC,IPCALAB,IRB,ITC,JAGRAN,JAMNAAUTO,JETAIRWAYS,JINDALPOLY,JINDALSTEL,JISLJALEQS,JKCEMENT,JKIL,JKPAPER,JKTYRE,JPASSOCIAT,JSL,JSLHISAR,JSWENERGY,JSWSTEEL,JUBILANT,JUBLFOOD,JUSTDIAL,JYOTHYLAB,KAJARIACER,KALPATPOWR,KANSAINER,KARURVYSYA,KEC,KEI,KESORAMIND,KHADIM,KIRLOSENG,KOKUYOCMLN,KOTAKBANK,KOTAKNIFTY,KPIT,KRBL,KSCL,KTKBANK,KWALITY,L&TFH,LALPATHLAB,LEEL,LGBBROSLTD,LICHSGFIN,LINDEINDIA,LIQUIDBEES,LOVABLE,LT,LUPIN,M&M,M&MFIN,M100,M50,MAGMA,MAHINDCIE,MAHLOG,MAJESCO,MANALIPETC,MANAPPURAM,MANGALAM,MANINFRA,MANPASAND,MARICO,MARKSANS,MARUTI,MASFIN,MATRIMONY,MCDOWELL-N,MCLEODRUSS,MCX,MEGH,MERCATOR,MFSL,MGL,MINDAIND,MINDTREE,MOIL,MOLDTKPAC,MOTHERSUMI,MPHASIS,MRF,MRPL,MUKANDLTD,MUTHOOTFIN,NATIONALUM,NAUKRI,NBCC,NCC,NESTLEIND,NETWORK18,NFL,NH,NHPC,NIACL,NIF100IWIN,NIFTYBEES,NIFTYIWIN,NIITLTD,NIITTECH,NLCINDIA,NMDC,NOCIL,NRBBEARING,NTPC,OBEROIRLTY,OFSS,OIL,OMAXE,ONGC,ORIENTBANK,ORIENTCEM,PAGEIND,PARAGMILK,PCJEWELLER,PEL,PERSISTENT,PETRONET,PFC,PFIZER,PGHH,PHOENIXLTD,PIDILITIND,PIIND,PNB,PNBHOUSING,POLYPLEX,POWERGRID,PRAKASH,PRESTIGE,PTC,PVR,QUICKHEAL,RADICO,RADIOCITY,RAJESHEXPO,RALLIS,RAMCOCEM,RAMCOIND,RAYMOND,RBLBANK,RCF,RCOM,RECLTD,RELAXO,RELCAPITAL,RELIANCE,RELINFRA,REPCOHOME,RICOAUTO,RKFORGE,RNAM,RNAVAL,ROLTA,RPOWER,SADBHAV,SAIL,SALASAR,SALZERELEC,SANGHIIND,SANOFI,SAREGAMA,SBILIFE,SBIN,SCHAND,SCI,SHANKARA,SHARDAMOTR,SHRIRAMCIT,SICAL,SIEMENS,SINTEX,SIS,SJVN,SKFINDIA,SNOWMAN,SOBHA,SOLARINDS,SOUTHBANK,SPARC,SPTL,SREINFRA,SRF,SRTRANSFIN,STAR,SUNDARMFIN,SUNDRMFAST,SUNPHARMA,SUNTECK,SUNTV,SUPREMEIND,SUZLON,SYMPHONY,SYNDIBANK,SYNGENE,TATACHEM,TATACOFFEE,TATACOMM,TATAELXSI,TATAGLOBAL,TATAINVEST,TATAMOTORS,TATAMTRDVR,TATAPOWER,TATASPONGE,TATASTEEL,TBZ,TCI,TCS,TECHM,TEJASNET,THERMAX,THOMASCOOK,THYROCARE,TIFIN,TIRUMALCHM,TITAN,TNPETRO,TNPL,TORNTPHARM,TORNTPOWER,TRENT,TRIDENT,TTKPRESTIG,TV18BRDCST,TVSMOTOR,TWL,UBL,UCOBANK,UJJIVAN,ULTRACEMCO,UNIONBANK,UPL,VAKRANGEE,VEDL,VENKEYS,VGUARD,VIJAYABANK,VISHNU,VOLTAS,VTL,WABCOINDIA,WELENT,WHIRLPOOL,WIPRO,WOCKPHARMA,WONDERLA,YESBANK,ZEEL";
+            //share below 700
+            var shareBelow700 = "ABAN,ABFRL,ADANIENT,ADANIPORTS,ADANIPOWER,ALBK,ALLCARGO,AMBUJACEM,ANDHRABANK,APLLTD,APOLLOTYRE,ARVIND,ASAHIINDIA,ASHOKLEY,ATFL,AUBANK,AUROPHARMA,AXISBANK,BAJAJCORP,BAJAJELEC,BAJAJHIND,BALRAMCHIN,BANCOINDIA,BANKBARODA,BANKINDIA,BEL,BERGEPAINT,BGRENERGY,BHARATFORG,BHARTIARTL,BHEL,BIOCON,BPCL,BRNL,CADILAHC,CANBK,CANFINHOME,CAPACITE,CAPF,CASTROLIND,CDSL,CENTRALBK,CENTURYPLY,CGPOWER,CHENNPETRO,CIPLA,COALINDIA,COCHINSHIP,COFFEEDAY,COROMANDEL,COX&KINGS,CROMPTON,CUB,CYIENT,DABUR,DBCORP,DBREALTY,DCBBANK,DCMSHRIRAM,DHFL,DISHTV,DLF,EDELWEISS,EIDPARRY,EIHOTEL,ENGINERSIN,EQUITAS,ESCORTS,EVEREADY,EXIDEIND,FEDERALBNK,FEL,FINCABLES";
+            //Share below 1000
+            var shareBelow1000 =
+                "ABAN,ABFRL,ADANIENT,ADANIPORTS,ADANIPOWER,ALBK,ALLCARGO,AMARAJABAT,AMBUJACEM,ANDHRABANK,APLLTD,APOLLOTYRE,ARVIND,ASAHIINDIA,ASHOKLEY,ATFL,AUBANK,AUROPHARMA,AXISBANK,BAJAJCORP,BAJAJELEC,BAJAJHIND,BALRAMCHIN,BANCOINDIA,BANKBARODA,BANKINDIA,BATAINDIA,BEL,BERGEPAINT,BGRENERGY,BHARATFORG,BHARTIARTL,BHEL,BIOCON,BPCL,BRNL,BSE,CADILAHC,CANBK,CANFINHOME,CAPACITE,CAPF,CASTROLIND,CDSL,CENTRALBK,CENTURYPLY,CGPOWER,CHENNPETRO,CIPLA,COALINDIA,COCHINSHIP,COFFEEDAY,COROMANDEL,COX&KINGS,CROMPTON,CUB,CUMMINSIND,CYIENT,DABUR,DBCORP,DBREALTY,DCBBANK,DCMSHRIRAM,DHFL,DISHTV,DLF,EDELWEISS,EIDPARRY,EIHOTEL,ENGINERSIN,EQUITAS,ERIS,ESCORTS,EVEREADY,EXIDEIND,FEDERALBNK,FEL,FINCABLES,FORTIS,FRETAIL,GAIL,GANECOS,GATI,GDL,GEPIL,GESHIP,GICHSGFIN,GICRE,GLENMARK,GMRINFRA,GNA,GNFC,GODREJAGRO,GODREJCP,GODREJIND,GODREJPROP,GPPL,GRANULES,GREAVESCOT,GRUH,GSFC,GSPL,GTPL,GUJALKALI,GUJFLUORO,GUJGASLTD,HAVELLS,HCC,HCLTECH,HDIL,HEIDELBERG,HEXAWARE,HGS,HIKAL,HINDALCO,HINDPETRO,HINDZINC,HOTELEELA,HSCL,HSIL,HUDCO,IBREALEST,ICICIBANK,ICICIGI,ICICIPRULI,ICIL,IDBI,IDEA,IDFC,IDFCBANK,IFCI,IGL,IGPL,IIFL,IL&FSTRANS,INDHOTEL,INDIACEM,INDIANB,INFIBEAM,INFRATEL,INOXLEISUR,INOXWIND,INTELLECT,IOB,IOC,IPCALAB,IRB,ITC,JAGRAN,JAMNAAUTO,JETAIRWAYS,JINDALPOLY,JINDALSTEL,JISLJALEQS,JKIL,JKPAPER,JKTYRE,JPASSOCIAT,JSL,JSLHISAR,JSWENERGY,JSWSTEEL,JUBILANT,JUSTDIAL,JYOTHYLAB,KAJARIACER,KALPATPOWR,KANSAINER,KARURVYSYA,KEC,KEI,KESORAMIND,KHADIM,KIRLOSENG,KOKUYOCMLN,KOTAKNIFTY,KPIT,KRBL,KSCL,KTKBANK,KWALITY,L&TFH,LALPATHLAB,LEEL,LICHSGFIN,LINDEINDIA,LOVABLE,LUPIN,M&M,M&MFIN,M100,M50,MAGMA,MAHINDCIE,MAHLOG,MAJESCO,MANALIPETC,MANAPPURAM,MANGALAM,MANINFRA,MANPASAND,MARICO,MARKSANS,MASFIN,MATRIMONY,MCLEODRUSS,MCX,MEGH,MERCATOR,MFSL,MINDTREE,MOIL,MOLDTKPAC,MOTHERSUMI,MPHASIS,MRPL,MUKANDLTD,MUTHOOTFIN,NATIONALUM,NBCC,NCC,NETWORK18,NFL,NH,NHPC,NIACL,NIF100IWIN,NIFTYIWIN,NIITLTD,NIITTECH,NLCINDIA,NMDC,NOCIL,NRBBEARING,NTPC,OBEROIRLTY,OIL,OMAXE,ONGC,ORIENTBANK,ORIENTCEM,PARAGMILK,PCJEWELLER,PERSISTENT,PETRONET,PFC,PHOENIXLTD,PIDILITIND,PIIND,PNB,POLYPLEX,POWERGRID,PRAKASH,PRESTIGE,PTC,QUICKHEAL,RADICO,RADIOCITY,RAJESHEXPO,RALLIS,RAMCOCEM,RAMCOIND,RBLBANK,RCF,RCOM,RECLTD,RELAXO,RELCAPITAL,RELIANCE,RELINFRA,REPCOHOME,RICOAUTO,RKFORGE,RNAM,RNAVAL,ROLTA,RPOWER,SADBHAV,SAIL,SALASAR,SALZERELEC,SANGHIIND,SAREGAMA,SBILIFE,SBIN,SCHAND,SCI,SICAL,SINTEX,SJVN,SNOWMAN,SOBHA,SOUTHBANK,SPARC,SPTL,SREINFRA,STAR,SUNDRMFAST,SUNPHARMA,SUNTECK,SUZLON,SYNDIBANK,SYNGENE,TATACHEM,TATACOFFEE,TATACOMM,TATAELXSI,TATAGLOBAL,TATAINVEST,TATAMOTORS,TATAMTRDVR,TATAPOWER,TATASPONGE,TATASTEEL,TBZ,TCI,TECHM,TEJASNET,THOMASCOOK,THYROCARE,TIFIN,TITAN,TNPETRO,TNPL,TORNTPOWER,TRENT,TRIDENT,TV18BRDCST,TVSMOTOR,TWL,UCOBANK,UJJIVAN,UNIONBANK,UPL,VAKRANGEE,VEDL,VGUARD,VIJAYABANK,VOLTAS,WELENT,WIPRO,WOCKPHARMA,WONDERLA,YESBANK,ZEEL";
+            var shareBelow500 = "ABAN,ABFRL,ADANIENT,ADANIPORTS,ADANIPOWER,ALBK,ALLCARGO,AMBUJACEM,ANDHRABANK,APOLLOTYRE,ARVIND,ASAHIINDIA,ASHOKLEY,BAJAJCORP,BAJAJELEC,BAJAJHIND,BALRAMCHIN,BANCOINDIA,BANKBARODA,BANKINDIA,BEL,BERGEPAINT,BGRENERGY,BHEL,BRNL,CADILAHC,CANBK,CANFINHOME,CAPACITE,CASTROLIND,CDSL,CENTRALBK,CENTURYPLY,CGPOWER,CHENNPETRO,COALINDIA,COFFEEDAY,COX&KINGS,CROMPTON,CUB,DABUR,DBCORP,DBREALTY,DCBBANK,DISHTV,DLF,EDELWEISS,EIDPARRY,EIHOTEL,ENGINERSIN,EQUITAS,EVEREADY,EXIDEIND,FEDERALBNK,FEL,FORTIS,GANECOS,GATI,GDL,GESHIP,GICHSGFIN,GMRINFRA,GNA,GNFC,GPPL,GRANULES,GREAVESCOT,GRUH,GSFC,GSPL,GTPL,HCC,HDIL,HEIDELBERG,HEXAWARE,HIKAL,HINDALCO,HINDPETRO,HINDZINC,HOTELEELA,HSCL,HUDCO,IBREALEST,ICICIBANK,ICICIPRULI,ICIL,IDBI,IDEA,IDFC,IDFCBANK,IFCI,IGL,IL&FSTRANS,INDHOTEL,INDIACEM,INDIANB,INFIBEAM,INFRATEL,INOXLEISUR,INOXWIND,INTELLECT,IOB,IOC,IRB,ITC,JAGRAN,JAMNAAUTO,JINDALPOLY,JINDALSTEL,JISLJALEQS,JKIL,JKPAPER,JKTYRE,JPASSOCIAT,JSL,JSLHISAR,JSWENERGY,JSWSTEEL,JYOTHYLAB,KALPATPOWR,KARURVYSYA,KEC,KEI,KESORAMIND,KIRLOSENG,KOKUYOCMLN,KOTAKNIFTY,KPIT,KTKBANK,KWALITY,L&TFH,LEEL,LOVABLE,M&MFIN,M100,M50,MAGMA,MAHINDCIE,MAHLOG,MANALIPETC,MANAPPURAM,MANGALAM,MANINFRA,MANPASAND,MARICO,MARKSANS,MCLEODRUSS,MEGH,MERCATOR,MOIL,MOLDTKPAC,MOTHERSUMI,MRPL,MUKANDLTD,MUTHOOTFIN,NATIONALUM,NBCC,NCC,NETWORK18,NFL,NH,NHPC,NIF100IWIN,NIFTYIWIN,NIITLTD,NLCINDIA,NMDC,NOCIL,NRBBEARING,NTPC,OBEROIRLTY,OIL,OMAXE,ONGC,ORIENTBANK,ORIENTCEM,PARAGMILK,PCJEWELLER,PETRONET,PFC,PNB,POWERGRID,PRAKASH,PRESTIGE,PTC,QUICKHEAL,RADICO,RADIOCITY,RALLIS,RAMCOIND,RCF,RCOM,RECLTD,RICOAUTO,RNAM,RNAVAL,ROLTA,RPOWER,SADBHAV,SAIL,SALASAR,SALZERELEC,SANGHIIND,SBIN,SCI,SICAL,SINTEX,SJVN,SNOWMAN,SOUTHBANK,SPARC,SPTL,SREINFRA,SUNTECK,SUZLON,SYNDIBANK,TATACOFFEE,TATAGLOBAL,TATAMOTORS,TATAMTRDVR,TATAPOWER,TBZ,TCI,TECHM,TEJASNET,THOMASCOOK,TNPETRO,TNPL,TORNTPOWER,TRENT,TRIDENT,TV18BRDCST,TWL,UCOBANK,UJJIVAN,UNIONBANK,VAKRANGEE,VEDL,VGUARD,VIJAYABANK,WELENT,WIPRO,WONDERLA,YESBANK";
+            return allIntradayData.Split(',');
         }
+
 
     }
 }

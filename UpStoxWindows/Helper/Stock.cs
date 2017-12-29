@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using iTextSharp.text;
 
 namespace UpStoxWindows.Helper
 {
@@ -10,7 +11,8 @@ namespace UpStoxWindows.Helper
     {
         public string Exchange { get; set; }
         public string Symbol { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
 
         //   public string Date { get; set; }
         //   public string Time { get; set; }
@@ -21,5 +23,7 @@ namespace UpStoxWindows.Helper
         public string High { get; set; }
         public string Low { get; set; }
         public string Call { get; set; }
+        public string StockString { get; set; }
+        public double NetQuantity { get; set; }
     }
 }
